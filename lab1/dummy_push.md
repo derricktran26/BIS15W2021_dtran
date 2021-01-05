@@ -25,7 +25,7 @@ install.packages("tidyverse")
 ## package 'tidyverse' successfully unpacked and MD5 sums checked
 ## 
 ## The downloaded binary packages are in
-## 	C:\Users\Derrick\AppData\Local\Temp\RtmpYn6lnC\downloaded_packages
+## 	C:\Users\Derrick\AppData\Local\Temp\RtmpWGloVA\downloaded_packages
 ```
 
 ```r
@@ -41,7 +41,7 @@ install.packages("nycflights13")
 ## package 'nycflights13' successfully unpacked and MD5 sums checked
 ## 
 ## The downloaded binary packages are in
-## 	C:\Users\Derrick\AppData\Local\Temp\RtmpYn6lnC\downloaded_packages
+## 	C:\Users\Derrick\AppData\Local\Temp\RtmpWGloVA\downloaded_packages
 ```
 
 ## Working directory
