@@ -6,6 +6,8 @@ output:
   html_document: 
     theme: spacelab
     keep_md: yes
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ## Instructions
@@ -35,7 +37,7 @@ spring_8 <- c(36.80, 36.45, 33.15)
 #4. Build a data matrix that has the springs as rows and the columns as scientists.  
 ```{r}
  spring_data <- c(spring_1, spring_2, spring_3, spring_4, spring_5, spring_6, spring_7, spring_8)
- #spring_data
+ spring_data
  spring_data_matrix <- matrix(spring_data, nrow=8, byrow=T)
  spring_data_matrix
 ```
@@ -47,7 +49,7 @@ spring_8 <- c(36.80, 36.45, 33.15)
 ```{r}
 spring_names <- c("Bluebell Spring", "Opal Spring", "Riverside Spring", "Too Hot Spring", "Mystery Spring", "Emerald Spring","Black Spring", "Pearl Spring" )
 scientist_name <- c("jil", "steven", "susan")
-#spring_names [2]
+spring_names [2]
 colnames(spring_data_matrix)<- scientist_name
 
 
@@ -59,7 +61,7 @@ spring_data_matrix
 ```{r}
 avg_temp <- rowMeans(spring_data_matrix)
 
-#average_row_temp
+avg_temp
 ```
 7. Add this as a new column in the data matrix.  
 ```{r}
@@ -71,15 +73,26 @@ spring_data_matrix
 ```
 
 8. Show Susan's value for Opal Spring only.
-```{r}
 
+```{r}
+spring_data_matrix [2,]
 ```
 
-
-
 9. Calculate the mean for Jill's column only.  
+```{r}
+jill_column <- spring_data_matrix[,1]
+
+jill_avg <- mean(jill_column)
+```
 
 10. Use the data matrix to perform one calculation or operation of your interest.
+#i want to find the median of pearl spring
+
+```{r}
+med_data <- spring_data_matrix[8,]
+median_data <- median(med_data)
+median_data
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.  

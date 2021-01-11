@@ -149,6 +149,7 @@ sum(box_office)
 #make a new object total earnings 
 ```{r}
 is.numeric(box_office)
+
 ```
 
 
