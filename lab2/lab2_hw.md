@@ -1,7 +1,7 @@
 ---
 title: "Lab 2 Homework"
 author: "Derrick Tran  "
-date: "2021-01-10"
+date: "2021-01-12"
 output:
   html_document: 
     theme: spacelab
@@ -40,7 +40,15 @@ spring_8 <- c(36.80, 36.45, 33.15)
 
 ```r
  spring_data <- c(spring_1, spring_2, spring_3, spring_4, spring_5, spring_6, spring_7, spring_8)
- #spring_data
+ spring_data
+```
+
+```
+##  [1] 36.25 35.40 35.30 35.15 35.35 33.35 30.70 29.65 29.20 39.70 40.05 38.65
+## [13] 31.85 31.40 29.30 30.20 30.65 29.75 32.90 32.50 32.80 36.80 36.45 33.15
+```
+
+```r
  spring_data_matrix <- matrix(spring_data, nrow=8, byrow=T)
  spring_data_matrix
 ```
@@ -65,7 +73,14 @@ spring_8 <- c(36.80, 36.45, 33.15)
 ```r
 spring_names <- c("Bluebell Spring", "Opal Spring", "Riverside Spring", "Too Hot Spring", "Mystery Spring", "Emerald Spring","Black Spring", "Pearl Spring" )
 scientist_name <- c("jil", "steven", "susan")
-#spring_names [2]
+spring_names [2]
+```
+
+```
+## [1] "Opal Spring"
+```
+
+```r
 colnames(spring_data_matrix)<- scientist_name
 
 
@@ -148,7 +163,11 @@ jill_avg <- mean(jill_column)
 ```r
 med_data <- spring_data_matrix[8,]
 median_data <- median(med_data)
-#median_data
+median_data
+```
+
+```
+## [1] 35.95833
 ```
 
 ## Push your final code to GitHub!
