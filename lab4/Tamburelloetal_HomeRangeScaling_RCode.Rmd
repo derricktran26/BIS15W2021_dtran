@@ -1,0 +1,982 @@
+---
+title: Supplementary Online Material for Tamburello et al. - Energy and the scaling
+  of animal space use
+author: "Natascia Tamburello"
+date: "Thursday, April 3, 2015"
+output: pdf_document
+---
+This document is supplementary online material for Natascia Tamburello, Isabelle M. Cote, and Nicholas K. Dulvy. In press. Energy and the scaling of animal space use. The American Naturalist.
+
+Load required packages and read in and subset the data by taxon and analysis groups of interest:
+
+```{r, read.in.data}
+
+library("lme4")
+library("lmerTest")
+library("MuMIn")
+library("ggplot2")
+library("scales")
+library("calibrate")
+library("magicaxis")
+library("grid")
+
+#download files from figshare (http://dx.doi.org/10.6084/m9.figshare.1365660) and assign as follows with the proper working directory on your machine 
+
+#main home range data set
+data <-read.csv("C:/Research/Home Range Scaling/Tamburelloetal_HomeRangeDatabase.csv", header=T, sep=",")
+str(data)
+
+#mock data set for prediction of carnivore-only mass models for Figure 3
+data.PM <-read.csv("C:/Research/Home Range Scaling/Tamburelloetal_Fig2_PreymassPredictionData.csv", header=T, sep=",")
+str(data.PM)
+
+#mock data set for prediction of global models for Figure A2
+data.FM <-read.csv("C:/Research/Home Range Scaling/Tamburelloetal_FigA2_MassPredictionDataAllModels.csv", header=T, sep=",")
+
+#Subsetting by order
+birds <-data[ which(data$class=='aves'),]
+mammals <-data[ which(data$class=='mammalia'),]
+reptiles <-data[ which(data$class=='reptilia'),]
+fish <-data[ which(data$class=='actinopterygii'),]
+
+#Subsetting by analysis group
+carn.mammals <-data[ which(data$taxon=='mammals'& data$trophic.guild=='carnivore'),]
+herb.mammals <-data[ which(data$taxon=='mammals'& data$trophic.guild=='herbivore'),]
+
+carn.birds.2D <-data[ which(data$taxon=='birds'& data$trophic.guild=='carnivore'& data$dimension=='2D'),]
+carn.birds.3D <-data[ which(data$taxon=='birds'& data$trophic.guild=='carnivore'& data$dimension=='3D'),]
+herb.birds.2D <-data[ which(data$taxon=='birds'& data$trophic.guild=='herbivore'& data$dimension=='2D'),]
+herb.birds.3D <-data[ which(data$taxon=='birds'& data$trophic.guild=='herbivore'& data$dimension=='3D'),]
+
+carn.marfish <-data[ which(data$taxon=='marine fishes'& data$trophic.guild=='carnivore'),]
+herb.marfish <-data[ which(data$taxon=='marine fishes'& data$trophic.guild=='herbivore'),]
+carn.rivfish <-data[ which(data$taxon=='river fishes'),]
+carn.lakefish <-data[ which(data$taxon=='lake fishes'),]
+
+carn.snakes <-data[ which(data$taxon=='snakes'),]
+carn.turtles <-data[ which(data$taxon=='turtles'),]
+herb.turtles <-data[ which(data$taxon=='tortoises'),]
+herb.lizards <-data[ which(data$taxon=='lizards'),]
+
+```
+
+Estimate parameters of home range allometry models for individual taxa as reported in Figure 1:
+
+```{r, taxon-level.home.range.allometries}
+#Create a fake dataset to predict home range area at 1kg
+taxonpredict <- data.frame(log10.mass = c(3), primarymethod = 'telemetry')
+
+#Home range allometry models for bird taxa
+
+#Carnivorous flying birds, because mix of tracking methods use mixed model
+carn.birds.3D.mod = lmer(log10.hra ~ log10.mass + (1|primarymethod), data=carn.birds.3D)
+summary(carn.birds.3D.mod)
+r.squaredGLMM(carn.birds.3D.mod)
+10^(predict(carn.birds.3D.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+#Other birds tracked almost entirely using telemetry, use simple linear model
+carn.birds.2D.mod = lm(log10.hra ~ log10.mass, data=carn.birds.2D)
+summary(carn.birds.2D.mod)
+10^(predict(carn.birds.2D.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+herb.birds.3D.mod = lm(log10.hra ~ log10.mass, data=herb.birds.3D)
+summary(herb.birds.3D.mod)
+10^(predict(herb.birds.3D.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+herb.birds.2D.mod = lm(log10.hra ~ log10.mass, data=herb.birds.2D)
+summary(herb.birds.2D.mod)
+10^(predict(herb.birds.2D.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+#Mammals tracked almost entirely using telemetry, use simple linear model
+carn.mammals.mod = lm(log10.hra ~ log10.mass , data=carn.mammals)
+summary(carn.mammals.mod)
+10^(predict(carn.mammals.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+herb.mammals.mod = lm(log10.hra ~ log10.mass, data=herb.mammals)
+summary(herb.mammals.mod)
+10^(predict(herb.mammals.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+######## All reptiles tracked almost entirely using telemetry, use simple linear model
+carn.snakes.mod = lm(log10.hra ~ log10.mass, data=carn.snakes)
+summary(carn.snakes.mod)
+10^(predict(carn.snakes.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+carn.turtles.mod = lm(log10.hra ~ log10.mass, data=carn.turtles)
+summary(carn.turtles.mod)
+10^(predict(carn.turtles.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+herb.turtles.mod = lm(log10.hra ~ log10.mass, data=herb.turtles)
+summary(herb.turtles.mod)
+10^(predict(herb.turtles.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+herb.lizards.mod = lm(log10.hra ~ log10.mass, data=herb.lizards)
+summary(herb.lizards.mod)
+10^(predict(herb.lizards.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+#almost all lake/river fish have same method, so omitted primarymethod and used lm instead
+carn.rivfish.mod = lm(log10.hra ~ log10.mass, data=carn.rivfish)
+summary(carn.rivfish.mod)
+10^(predict(carn.rivfish.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+carn.lakefish.mod = lm(log10.hra ~ log10.mass, data=carn.lakefish)
+summary(carn.lakefish.mod)
+10^(predict(carn.lakefish.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+#Marine fish tracked with a variety of methods, account for this as a random effect
+carn.marfish.mod = lmer(log10.hra ~ log10.mass + (1|primarymethod), data=carn.marfish)
+summary(carn.marfish.mod)
+r.squaredGLMM(carn.marfish.mod)
+10^(predict(carn.marfish.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+herb.marfish.mod = lmer(log10.hra ~ log10.mass + (1|primarymethod), data=herb.marfish)
+summary(herb.marfish.mod)
+r.squaredGLMM(herb.marfish.mod)
+10^(predict(herb.marfish.mod, newdata=taxonpredict)) #predict home range area 1kg (HRA1kg)
+
+
+```
+
+Now we plot the individual taxon relationships. The output of this section forms the basis for Figure 2.
+
+```{r, plotting.taxon-level.allometries}
+
+########Creating Figure 2########
+
+#Set colours with transparency
+#BW
+colcarn = rgb(51,51,51,alpha=160, maxColorValue = 255)
+colherb = rgb(166,166,166,alpha=160, maxColorValue = 255)
+colpoly = rgb(166,166,166,alpha=70, maxColorValue = 255)
+
+#Colours: mammals firebrick, reptiles olivedrab, fish steelblue, birds orchid4
+colmamm = rgb(248,118,109, maxColorValue = 255)
+colbird = rgb(199,124,255, maxColorValue = 255)
+colrept = rgb(154,205,50, maxColorValue = 255)
+colfish = rgb(0,191,196, maxColorValue = 255)
+
+####Main plot with only line segments
+plot(x=data$mean.mass.g, y=data$mean.hra.m2, type = "n", log = "xy", pch=1, col="white", axes=FALSE, xlim=c(0.1,10000000), ylim=c(1, 10000000000), xlab = "Mean Species Body Mass (g)", ylab = "Mean Species Home Range Area (m2)")
+magaxis(side=1:2, logpretty=TRUE)
+
+#Carn Mammals
+carn.mammals.range <- c(min(carn.mammals$log10.mass), max(carn.mammals$log10.mass))
+carn.mammals.predict <- predict(carn.mammals.mod, newdata=data.frame(log10.mass=carn.mammals.range))
+lines(x=10^(carn.mammals.range), y=10^(carn.mammals.predict), col = colmamm, lwd = 5)
+text(min(10^carn.mammals.range),min(10^carn.mammals.predict),labels="CM", cex=0.5, col = "black")
+
+#Herb Mammals
+herb.mammals.range <- c(min(herb.mammals$log10.mass), max(herb.mammals$log10.mass))
+herb.mammals.predict <- predict(herb.mammals.mod, newdata=data.frame(log10.mass=herb.mammals.range))
+lines(x=10^(herb.mammals.range), y=10^(herb.mammals.predict), col = colmamm, lwd = 2)
+text(min(10^herb.mammals.range),min(10^herb.mammals.predict),labels="HM", cex=0.5, col = "black")
+
+#Carn Birds 3D
+carn.birds.3D.range <- c(min(carn.birds.3D$log10.mass), max(carn.birds.3D$log10.mass))
+newdata<-data.frame(log10.mass=carn.birds.3D.range)
+carn.birds.3D.predict <- predict(carn.birds.3D.mod, newdata=newdata, re.form = NA)
+lines(x=10^(carn.birds.3D.range), y=10^(carn.birds.3D.predict), col = colbird, lwd = 5)
+text(min(10^carn.birds.3D.range),min(10^carn.birds.3D.predict),labels="CB3D", cex=0.5, col = "black")
+
+#Carn Birds 2D
+carn.birds.2D.range <- c(min(carn.birds.2D$log10.mass), max(carn.birds.2D$log10.mass))
+newdata<-data.frame(log10.mass=carn.birds.2D.range)
+carn.birds.2D.predict <- predict(carn.birds.2D.mod, newdata=newdata, re.form = NA)
+lines(x=10^(carn.birds.2D.range), y=10^(carn.birds.2D.predict), col = colbird, lwd = 5)
+text(min(10^carn.birds.2D.range),min(10^carn.birds.2D.predict),labels="CB2D", cex=0.5, col = "black")
+
+#Herb Birds 2D
+herb.birds.2D.range <- c(min(herb.birds.2D$log10.mass), max(herb.birds.2D$log10.mass))
+newdata<-data.frame(log10.mass=herb.birds.2D.range)
+herb.birds.2D.predict <- predict(herb.birds.2D.mod, newdata=newdata, re.form = NA)
+lines(x=10^(herb.birds.2D.range), y=10^(herb.birds.2D.predict), col = colbird, lwd = 2)
+text(min(10^herb.birds.2D.range),min(10^herb.birds.2D.predict),labels="HB2D", cex=0.5, col = "black")
+
+#Herb Birds 3D
+herb.birds.3D.range <- c(min(herb.birds.3D$log10.mass), max(herb.birds.3D$log10.mass))
+newdata<-data.frame(log10.mass=herb.birds.3D.range)
+herb.birds.3D.predict <- predict(herb.birds.3D.mod, newdata=newdata, re.form = NA)
+lines(x=10^(herb.birds.3D.range), y=10^(herb.birds.3D.predict), col = colbird, lwd = 2)
+text(min(10^herb.birds.3D.range),min(10^herb.birds.3D.predict),labels="HB3D", cex=0.5, col = "black")
+
+
+#Carn Snakes
+carn.snakes.range <- c(min(carn.snakes$log10.mass), max(carn.snakes$log10.mass))
+carn.snakes.predict <- predict(carn.snakes.mod, newdata=data.frame(log10.mass=carn.snakes.range))
+lines(x=10^(carn.snakes.range), y=10^(carn.snakes.predict), col = colrept, lwd = 5)
+text(min(10^carn.snakes.range),min(10^carn.snakes.predict),labels="SN", cex=0.5, col = "black")
+
+#Carn Turtles
+carn.turtles.range <- c(min(carn.turtles$log10.mass), max(carn.turtles$log10.mass))
+carn.turtles.predict <- predict(carn.turtles.mod, newdata=data.frame(log10.mass=carn.turtles.range))
+lines(x=10^(carn.turtles.range), y=10^(carn.turtles.predict), col = colrept, lwd = 5)
+text(min(10^carn.turtles.range),min(10^carn.turtles.predict),labels="TU", cex=0.5, col = "black")
+
+#Herb Turtles
+herb.turtles.range <- c(min(herb.turtles$log10.mass), max(herb.turtles$log10.mass))
+herb.turtles.predict <- predict(herb.turtles.mod, newdata=data.frame(log10.mass=herb.turtles.range))
+lines(x=10^(herb.turtles.range), y=10^(herb.turtles.predict), col = colrept, lwd = 2)
+text(min(10^herb.turtles.range),min(10^herb.turtles.predict),labels="TOR", cex=0.5, col = "black")
+
+#Herb Lizards
+herb.lizards.range <- c(min(herb.lizards$log10.mass), max(herb.lizards$log10.mass))
+herb.lizards.predict <- predict(herb.lizards.mod, newdata=data.frame(log10.mass=herb.lizards.range))
+lines(x=10^(herb.lizards.range), y=10^(herb.lizards.predict), col = colrept, lwd = 2)
+text(min(10^herb.lizards.range),min(10^herb.lizards.predict),labels="LIZ", cex=0.5, col = "black")
+
+#Carn Marine Fish
+carn.marfish.range <- c(min(carn.marfish$log10.mass), max(carn.marfish$log10.mass))
+newdata<-data.frame(log10.mass=carn.marfish.range)
+carn.marfish.predict <- predict(carn.marfish.mod, newdata=newdata, re.form = NA)
+lines(x=10^(carn.marfish.range), y=10^(carn.marfish.predict), col = colfish, lwd = 5)
+text(min(10^carn.marfish.range),min(10^carn.marfish.predict),labels="CMF", cex=0.5, col = "black")
+
+#Herb Marine Fish
+herb.marfish.range <- c(min(herb.marfish$log10.mass), max(herb.marfish$log10.mass))
+newdata<-data.frame(log10.mass=herb.marfish.range)
+herb.marfish.predict <- predict(herb.marfish.mod, newdata=newdata, re.form = NA)
+lines(x=10^(herb.marfish.range), y=10^(herb.marfish.predict), col = colfish, lwd = 2)
+text(min(10^herb.marfish.range),min(10^herb.marfish.predict),labels="HMF", cex=0.5, col = "black")
+
+#Carn Lake Fish
+carn.lakefish.range <- c(min(carn.lakefish$log10.mass), max(carn.lakefish$log10.mass))
+carn.lakefish.predict <- predict(carn.lakefish.mod, newdata=data.frame(log10.mass=carn.lakefish.range))
+lines(x=10^(carn.lakefish.range), y=10^(carn.lakefish.predict), col = colfish, lwd = 5)
+text(min(10^carn.lakefish.range),min(10^carn.lakefish.predict),labels="CLF", cex=0.5, col = "black")
+
+#Carn River Fish
+carn.rivfish.range <- c(min(carn.rivfish$log10.mass), max(carn.rivfish$log10.mass))
+carn.rivfish.predict <- predict(carn.rivfish.mod, newdata=data.frame(log10.mass=carn.rivfish.range))
+lines(x=10^(carn.rivfish.range), y=10^(carn.rivfish.predict), col = colfish, lwd = 5)
+text(min(10^carn.rivfish.range),min(10^carn.rivfish.predict),labels="CRF", cex=0.5, col = "black")
+
+```
+
+```{r, plotting.taxon-level.allometries.subplots}
+
+##### Subplots for figure 1
+
+names(data)
+data.predict <- data[, c(1,3, 8, 11, 19, 20)]
+
+#### Subset by analysis group
+carn.mammals.p <-data.predict[ which(data.predict$taxon=='mammals'& data.predict$trophic.guild=='carnivore'),]
+herb.mammals.p <-data.predict[ which(data.predict$taxon=='mammals'& data.predict$trophic.guild=='herbivore'),]
+
+carn.birds.2D.p <-data.predict[ which(data.predict$taxon=='birds'& data.predict$trophic.guild=='carnivore'& data.predict$dimension=='2D'),]
+carn.birds.3D.p <-data.predict[ which(data.predict$taxon=='birds'& data.predict$trophic.guild=='carnivore'& data.predict$dimension=='3D'),]
+herb.birds.2D.p <-data.predict[ which(data.predict$taxon=='birds'& data.predict$trophic.guild=='herbivore'& data.predict$dimension=='2D'),]
+herb.birds.3D.p <-data.predict[ which(data.predict$taxon=='birds'& data.predict$trophic.guild=='herbivore'& data.predict$dimension=='3D'),]
+
+carn.marfish.p <-data.predict[ which(data.predict$taxon=='marine fishes'& data.predict$trophic.guild=='carnivore'),]
+herb.marfish.p <-data.predict[ which(data.predict$taxon=='marine fishes'& data.predict$trophic.guild=='herbivore'),]
+carn.rivfish.p <-data.predict[ which(data.predict$taxon=='river fishes'),]
+carn.lakefish.p <-data.predict[ which(data.predict$taxon=='lake fishes'),]
+
+carn.snakes.p <-data.predict[ which(data.predict$taxon=='snakes'),]
+carn.turtles.p <-data.predict[ which(data.predict$taxon=='turtles'),]
+herb.turtles.p <-data.predict[ which(data.predict$taxon=='tortoises'),]
+herb.lizards.p <-data.predict[ which(data.predict$taxon=='lizards'),]
+
+
+####For taxa modelled with lmer (marine fish, birds) use the methods below to obtain Figure 1 Subplots with 95% CI bands
+#When using predict with lmer objects, we specify re.form = NA to only use the coefficients estimated in consideration of random effects, but not the random effects themselves, when predicting from new data for a more generalized prediction.
+
+###Plot and 95% CIs for 3D Carnivorous Birds
+carn.birds.3D.mod = lmer(log10.hra ~ log10.mass + (1|primarymethod), data=carn.birds.3D, REML = FALSE)
+carn.birds.3D.p$log10.hra <- predict(carn.birds.3D.mod, newdata=carn.birds.3D.p, re.form = NA)
+newdat <- carn.birds.3D.p
+
+mm <- model.matrix(terms(carn.birds.3D.mod),newdat)
+## or newdat$distance <- mm %*% fixef(fm1)
+pvar1 <- diag(mm %*% tcrossprod(vcov(carn.birds.3D.mod),mm))
+tvar1 <- pvar1 + VarCorr(carn.birds.3D.mod)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra))
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") + geom_point(aes(x=carn.birds.3D$log10.mass, y = carn.birds.3D$log10.hra))
+
+###Plot and 95% CIs for 2D Carnivorous Birds
+carn.birds.2D.mod = lmer(log10.hra ~ log10.mass + (1|primarymethod), data=carn.birds.2D, REML = FALSE)
+carn.birds.2D.p$log10.hra <- predict(carn.birds.2D.mod, newdata=carn.birds.2D.p, re.form = NA)
+newdat <- carn.birds.2D.p
+
+mm <- model.matrix(terms(carn.birds.2D.mod),newdat)
+pvar1 <- diag(mm %*% tcrossprod(vcov(carn.birds.2D.mod),mm))
+tvar1 <- pvar1 + VarCorr(carn.birds.2D.mod)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra))
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") + geom_point(aes(x=carn.birds.2D$log10.mass, y = carn.birds.2D$log10.hra))
+
+###Plot and 95% CIs for 3D Herbivorous Birds
+herb.birds.3D.mod = lmer(log10.hra ~ log10.mass + (1|primarymethod), data=herb.birds.3D, REML = FALSE)
+herb.birds.3D.p$log10.hra <- predict(herb.birds.3D.mod, newdata=herb.birds.3D.p, re.form = NA)
+newdat <- herb.birds.3D.p
+
+mm <- model.matrix(terms(herb.birds.3D.mod),newdat)
+pvar1 <- diag(mm %*% tcrossprod(vcov(herb.birds.3D.mod),mm))
+tvar1 <- pvar1 + VarCorr(herb.birds.3D.mod)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra))
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") + geom_point(aes(x=herb.birds.3D$log10.mass, y = herb.birds.3D$log10.hra))
+
+###Plot and 95% CIs for 2D Herbivorous Birds
+herb.birds.2D.mod = lmer(log10.hra ~ log10.mass + (1|primarymethod), data=herb.birds.2D, REML = FALSE)
+herb.birds.2D.p$log10.hra <- predict(herb.birds.2D.mod, newdata=herb.birds.2D.p, re.form = NA)
+newdat <- herb.birds.2D.p
+
+mm <- model.matrix(terms(herb.birds.2D.mod),newdat)
+pvar1 <- diag(mm %*% tcrossprod(vcov(herb.birds.2D.mod),mm))
+tvar1 <- pvar1 + VarCorr(herb.birds.2D.mod)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra))
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") + geom_point(aes(x=herb.birds.2D$log10.mass, y = herb.birds.2D$log10.hra))
+
+###Plot and 95% CIs for Carnivorous Marine Fish
+carn.marfish.mod = lmer(log10.hra ~ log10.mass + (1|primarymethod), data=carn.marfish, REML = FALSE)
+carn.marfish.p$log10.hra <- predict(carn.marfish.mod, newdata=carn.marfish.p, re.form = NA)
+newdat <- carn.marfish.p
+
+mm <- model.matrix(terms(carn.marfish.mod),newdat)
+dim(mm)
+pvar1 <- diag(mm %*% tcrossprod(vcov(carn.marfish.mod),mm))
+tvar1 <- pvar1 + VarCorr(carn.marfish.mod)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra))
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") + geom_point(aes(x=carn.marfish$log10.mass, y = carn.marfish$log10.hra))
+
+
+###Plot and 95% CIs for Herbivorous Marine Fish
+herb.marfish.mod = lmer(log10.hra ~ log10.mass + (1|primarymethod), data=herb.marfish, REML = FALSE)
+herb.marfish.p$log10.hra <- predict(herb.marfish.mod, newdata=herb.marfish.p, re.form = NA, type = "response")
+newdat <- herb.marfish.p
+
+mm <- model.matrix(terms(herb.marfish.mod),newdat)
+dim(mm)
+pvar1 <- diag(mm %*% tcrossprod(vcov(herb.marfish.mod),mm))
+tvar1 <- pvar1 + VarCorr(herb.marfish.mod)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra))
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                              panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") + geom_point(aes(x=herb.marfish$log10.mass, y = herb.marfish$log10.hra))
+
+
+
+####For everything estimated with lm use predict > se = TRUE to obtain Figure 1 Subplots with 95% CI bands
+
+#Carn Mammals
+carn.mammals.mod = lm(log10.hra ~ log10.mass, data=carn.mammals)
+pred1 <- predict(carn.mammals.mod, newdata = carn.mammals.p, se.fit = TRUE, type = "response")
+g0 <- ggplot(carn.mammals, aes(x=log10.mass, y=log10.hra)) + geom_point(shape=16, alpha = 0.5) +scale_colour_hue(l=50) + # Use a slightly darker palette than normal
+  geom_smooth(method=lm,   # Add linear regression lines
+              se=TRUE)    # Decide if add shaded confidence region
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(), 
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+#Herb Mammals
+herb.mammals.mod = lm(log10.hra ~ log10.mass, data=herb.mammals)
+pred1 <- predict(herb.mammals.mod, newdata = herb.mammals.p, se.fit = TRUE, type = "response")
+g0 <- ggplot(herb.mammals, aes(x=log10.mass, y=log10.hra)) + geom_point(shape=16, alpha = 0.5) +scale_colour_hue(l=50) + # Use a slightly darker palette than normal
+  geom_smooth(method=lm,   # Add linear regression lines
+              se=TRUE)    # Decide if add shaded confidence region
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(), 
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+#Carn Snakes
+carn.snakes.mod = lm(log10.hra ~ log10.mass, data=carn.snakes)
+pred1 <- predict(carn.snakes.mod, newdata = carn.snakes.p, se.fit = TRUE, type = "response")
+g0 <- ggplot(carn.snakes, aes(x=log10.mass, y=log10.hra)) + geom_point(shape=16, alpha = 0.5) +scale_colour_hue(l=50) + # Use a slightly darker palette than normal
+  geom_smooth(method=lm,   # Add linear regression lines
+              se=TRUE)    # Decide if add shaded confidence region
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(), 
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+#Carn Turtles
+carn.turtles.mod = lm(log10.hra ~ log10.mass, data=carn.turtles)
+pred1 <- predict(carn.turtles.mod, newdata = carn.turtles.p, se.fit = TRUE, type = "response")
+g0 <- ggplot(carn.turtles, aes(x=log10.mass, y=log10.hra)) + geom_point(shape=16, alpha = 0.5) +scale_colour_hue(l=50) + # Use a slightly darker palette than normal
+  geom_smooth(method=lm,   # Add linear regression lines
+              se=TRUE)    # Decide if add shaded confidence region
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(), 
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+#Herb Turtles
+herb.turtles.mod = lm(log10.hra ~ log10.mass, data=herb.turtles)
+pred1 <- predict(herb.turtles.mod, newdata = herb.turtles.p, se.fit = TRUE, type = "response")
+g0 <- ggplot(herb.turtles, aes(x=log10.mass, y=log10.hra)) + geom_point(shape=16, alpha = 0.5) +scale_colour_hue(l=50) + # Use a slightly darker palette than normal
+  geom_smooth(method=lm,   # Add linear regression lines
+              se=TRUE)    # Decide if add shaded confidence region
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(), 
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+#Herb Lizards
+herb.lizards.mod = lm(log10.hra ~ log10.mass, data=herb.lizards)
+pred1 <- predict(herb.lizards.mod, newdata = herb.lizards.p, se.fit = TRUE, type = "response")
+g0 <- ggplot(herb.lizards, aes(x=log10.mass, y=log10.hra)) + geom_point(shape=16, alpha = 0.5) +scale_colour_hue(l=50) + # Use a slightly darker palette than normal
+  geom_smooth(method=lm,   # Add linear regression lines
+              se=TRUE)    # Decide if add shaded confidence region
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(), 
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+#Carn Lakefish
+carn.lakefish.mod = lm(log10.hra ~ log10.mass, data=carn.lakefish)
+pred1 <- predict(carn.lakefish.mod, newdata = carn.lakefish.p, se.fit = TRUE, type = "response")
+g0 <- ggplot(carn.lakefish, aes(x=log10.mass, y=log10.hra)) + geom_point(shape=16, alpha = 0.5) +scale_colour_hue(l=50) + # Use a slightly darker palette than normal
+  geom_smooth(method=lm,   # Add linear regression lines
+              se=TRUE)    # Decide if add shaded confidence region
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(), 
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+#Carn River Fish
+carn.rivfish.mod = lm(log10.hra ~ log10.mass, data=carn.rivfish)
+pred1 <- predict(carn.rivfish.mod, newdata = carn.rivfish.p, se.fit = TRUE, type = "response")
+g0 <- ggplot(carn.rivfish, aes(x=log10.mass, y=log10.hra)) + geom_point(shape=16, alpha = 0.5) +scale_colour_hue(l=50) + # Use a slightly darker palette than normal
+  geom_smooth(method=lm,   # Add linear regression lines
+              se=TRUE)    # Decide if add shaded confidence region
+g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(), 
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+```
+
+
+Estimate parameters for global home range allometries including data from all taxa as reported in Table 2, accounting for systematic variation in Tracking Method and Phylogenetic class as random effects. We use REML = FALSE to allow comparisons of non-nested models via AICc and calculate the R2m and R2c values for mixed-effects models as per Nakagawa & Schielzeth 2012 using the r.squaredGLMM function in in version 1.10.0 of the MuMIn package. We add a -1 to the model syntax for models with multi-level factors to force R to report the absolute parameter estimates for each factor as in Scheilzeth 2010. For this approach to work in models with interaction terms (e.g. as for thermoregulation, dimension), we also omit mass as a stand-alone variable and include it only in interactions. Importantly, this change in syntax does NOT change the model results, only how the results are reported. The output of this section is the basis for Table 1.
+
+```{r, global.home.range.allometries}
+
+#Baseline model where HRA is predicted by mass alone, used as the baseline AICc from which to calculate delta AICc values.
+alltaxa.mass = lmer(log10.hra ~ log10.mass + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.mass)
+AICc(alltaxa.mass)
+r.squaredGLMM(alltaxa.mass)
+
+#Model incorporating mass and an intercept effect of realm
+alltaxa.realm = lmer(log10.hra ~ -1 + log10.mass + realm + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.realm)
+AICc(alltaxa.realm)
+r.squaredGLMM(alltaxa.realm)
+
+#Model incorporating mass and  an intercept effect of thermoregulation
+alltaxa.therm = lmer(log10.hra ~ -1 + log10.mass + thermoregulation + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.therm)
+AICc(alltaxa.therm)
+r.squaredGLMM(alltaxa.therm)
+
+#Model incorporating mass and both an intercept and slope effect of thermoregulation
+alltaxa.therm.int = lmer(log10.hra ~ -1 + log10.mass:thermoregulation + thermoregulation + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.therm.int)
+AICc(alltaxa.therm.int)
+r.squaredGLMM(alltaxa.therm.int)
+
+#Model incorporating mass and an intercept effect of dimension
+alltaxa.dim = lmer(log10.hra ~ -1 + log10.mass + dimension + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.dim)
+AICc(alltaxa.dim)
+r.squaredGLMM(alltaxa.dim)
+
+#Model incorporating mass and both an intercept and slope effect of dimension
+alltaxa.dim.int = lmer(log10.hra ~ -1 + log10.mass:dimension + dimension + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.dim.int)
+AICc(alltaxa.dim.int)
+r.squaredGLMM(alltaxa.dim.int)
+
+#Model incorporating mass and an intercept effect of locomotion (i.e. walking, flying, etc.)
+alltaxa.loc = lmer(log10.hra ~ -1 + log10.mass + locomotion + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.loc)
+AICc(alltaxa.loc)
+r.squaredGLMM(alltaxa.loc)
+
+#Model incorporating mass and an intercept effect of trophic guild (i.e. carnivore, herbivore)
+alltaxa.tg = lmer(log10.hra ~ -1 + log10.mass + trophic.guild + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.tg)
+AICc(alltaxa.tg)
+r.squaredGLMM(alltaxa.tg)
+
+#Model incorporating mass and both an intercept and slope effect of trophic guild
+alltaxa.tg.int = lmer(log10.hra ~ -1 + log10.mass:trophic.guild + trophic.guild + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.tg.int)
+AICc(alltaxa.tg.int)
+r.squaredGLMM(alltaxa.tg.int)
+
+#Full model incorporating all retained invididual models with delta AICc < -2
+alltaxa.full = lmer(log10.hra ~ log10.mass + trophic.guild + log10.mass:trophic.guild + dimension + log10.mass:dimension + locomotion + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.full)
+AICc(alltaxa.full)
+r.squaredGLMM(alltaxa.full)
+
+#Same full model relevelled to a baseline case of a swimming herbivorous fish
+
+trophic.guild1 = relevel(data$trophic.guild, "herbivore")
+locomotion1 = relevel(data$locomotion, "swimming")
+dimension1 = relevel(data$dimension, "2D")
+
+alltaxa.full1 = lmer(log10.hra ~ log10.mass + trophic.guild1 +
+                       log10.mass:trophic.guild1 + dimension1 + 
+                       log10.mass:dimension1 + locomotion1 + 
+                       (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.full1)
+AICc(alltaxa.full1)
+r.squaredGLMM(alltaxa.full1)
+
+```
+
+Now we investigate the potential role of predator-prey mass ratio on home range scaling among the subset of carnivores for which PPMR data is available by comparing support for the full model with and without PPMR (omitting trophic.guild since all animals in this subset of data are carnivores). Next we determine prey mass-predator mass relationships for each class and predict HRA for the full model with and without PPMR. The output of this section is the basis for Figure 3:
+
+```{r, carnivore.allometries}
+
+# Determine prey mass predator mass relationships by taxonomic class
+carndata.ppmr <-data[ which(data$log10.preymass!='NA'),]
+str(carndata.ppmr)
+
+#Comparing models with and without prey mass
+
+locomotion1 = relevel(carndata.ppmr$locomotion, "swimming")
+dimension1 = relevel(carndata.ppmr$dimension, "2D")
+
+carntaxa.full.int = lmer(log10.hra ~ log10.mass + dimension1 + log10.mass:dimension1 + locomotion1 + (1|class) + (1|primarymethod), data=carndata.ppmr, REML = FALSE)
+summary(carntaxa.full.int)
+AICc(carntaxa.full.int)
+r.squaredGLMM(carntaxa.full.int)
+
+carntaxa.fullPM.int = lmer(log10.hra ~ log10.mass + log10.preymass + dimension1 + log10.mass:dimension1 + locomotion1 + (1|class) + (1|primarymethod), data=carndata.ppmr, REML = FALSE)
+summary(carntaxa.fullPM.int)
+AICc(carntaxa.fullPM.int)
+r.squaredGLMM(carntaxa.fullPM.int)
+
+#delta AICc here
+AICc(carntaxa.fullPM.int)-AICc(carntaxa.full.int)
+
+#Plot of prey mass vs. predator mass by taxonomic class in the real data set
+ggplot(carndata.ppmr, aes(y=mean.hra.m2, x=mean.mass.g, color = class)) + scale_x_log10() + scale_y_log10() + geom_point(shape=16, alpha = 0.5) +
+  scale_colour_hue(l=50) + # Use a slightly darker palette than normal
+  geom_smooth(method=lm,   # Add linear regression lines
+              se=TRUE)    # Decide if add shaded confidence region
+
+#Subset the data and model these prey size-predator size relationships to be able to predict prey mass for hypothetical data
+
+carn.birds <-carndata.ppmr[ which(carndata.ppmr$class=='aves'),]
+
+carn.mammals <-carndata.ppmr[ which(carndata.ppmr$class=='mammalia'),]
+
+carn.reptiles <-carndata.ppmr[ which(carndata.ppmr$class=='reptilia'),]
+
+carn.fish <-carndata.ppmr[ which(carndata.ppmr$class=='actinopterygii'),]
+
+#For each taxon we create a linear model of prey-predator masses, and make a mock log10.mass dataset bounded by the limits of the real data for that taxon to predict prey masses for feeding back into the global carnivore-only model.
+
+#BIRDS
+carn.birds.predprey <- lm(log10.preymass ~ log10.mass, data=carn.birds)
+summary(carn.birds.predprey)
+carn.birds.PM <- data.frame(log10.mass=c(0.7,1,1.7,2,2.7,3,3.7), log10.preymass = c(NA,NA,NA,NA,NA,NA,NA))
+carn.birds.PM$log10.preymass <- predict(carn.birds.predprey, newdata=carn.birds.PM)
+
+#MAMMALS
+carn.mammals.predprey <- lm(log10.preymass ~ log10.mass, data=carn.mammals)
+summary(carn.mammals.predprey)
+carn.mammals.PM <- data.frame(log10.mass=c(0.7,1,1.7,2,2.7,3,3.7,4,4.7,5.05), log10.preymass = c(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA))
+carn.mammals.PM$log10.preymass <- predict(carn.mammals.predprey, newdata=carn.mammals.PM)
+
+#REPTILES
+carn.reptiles.predprey <- lm(log10.preymass ~ log10.mass, data=carn.reptiles)
+summary(carn.reptiles.predprey)
+carn.reptiles.PM <- data.frame(log10.mass=c(0.7,1,1.7,2,2.7,3.08), log10.preymass = c(NA,NA,NA,NA,NA,NA))
+carn.reptiles.PM$log10.preymass <- predict(carn.reptiles.predprey, newdata=carn.reptiles.PM)
+
+#FISH
+carn.fish.predprey <- lm(log10.preymass ~ log10.mass, data=carn.fish)
+summary(carn.fish.predprey)
+carn.fish.PM <- data.frame(log10.mass=c(0,0.7,1,1.7,2,2.7,3,3.32,3.51), log10.preymass = c(NA,NA,NA,NA,NA,NA,NA,NA,NA))
+carn.fish.PM$log10.preymass <- predict(carn.fish.predprey, newdata=carn.fish.PM)
+
+#Now predict home range area over a hypothetical data set using the full carnivore model with or without the predicted prey masses for mammals and fishes
+
+#Read in mock data with predicted prey masses from the prey size-predator size relationships
+#For CI predictions on the lmer model outputs, it is important that our mock data include all other variables in the model and includes all taxa used to parameterize the original model
+str(data.PM)
+
+#Now we plot our predictions and corresponding confidence intervals for lmer objects for carnivore models with and without prey mass
+
+#Home range area predictions on mock data from full model WITHOUT prey mass
+carntaxa.full.int = lmer(log10.hra ~ log10.mass + dimension + log10.mass:dimension + locomotion + (1|class) + (1|primarymethod), data=carndata.ppmr, REML = FALSE)
+
+data.PM$log10.hra <- predict(carntaxa.full.int, newdata=data.PM)
+str(data.PM)
+newdat<-data.PM
+
+#Plotting predictions of lmer models with confidence intervals from glmm.wikidot.com/faq
+
+mm <- model.matrix(terms(carntaxa.full.int),newdat)
+pvar1 <- diag(mm %*% tcrossprod(vcov(carntaxa.full.int),mm))
+tvar1 <- pvar1 + VarCorr(carntaxa.full.int)$class[1]+ VarCorr(carntaxa.full.int)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+
+
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra, colour=taxon))
+g0 +  annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_point() + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.2) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY")
+
+
+#Reload data for round 2, to get home range area predictions on full model WITH prey mass
+rm(newdat)
+data.PM <-read.csv("C:/Research/Home Range Scaling/Tamburelloetal_Fig2_PreymassPredictionData.csv", header=T, sep=",")
+str(data.PM)
+
+carntaxa.fullPM.int = lmer(log10.hra ~ log10.mass + dimension + 
+                       log10.mass:dimension + locomotion +
+                       log10.preymass +
+                       (1|class) + (1|primarymethod), data=carndata.ppmr, REML = FALSE)
+
+data.PM$log10.hra <- predict(carntaxa.fullPM.int, newdata=data.PM)
+str(data.PM)
+newdat<-data.PM
+
+#Plotting predictions of lmer models with confidence intervals from glmm.wikidot.com/faq
+
+mm <- model.matrix(terms(carntaxa.fullPM.int),newdat)
+## or newdat$distance <- mm %*% fixef(fm1)
+pvar1 <- diag(mm %*% tcrossprod(vcov(carntaxa.fullPM.int),mm))
+tvar1 <- pvar1 + VarCorr(carntaxa.fullPM.int)$class[1]+ VarCorr(carntaxa.fullPM.int)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+
+
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra, colour=taxon))
+g0 +  annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_point() + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.2) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY")
+
+```
+
+
+
+Creating online Figure A1.
+
+``` {r, Figure A1}
+
+###### Plots and 95% CI bands for Figure A1
+#########PLOT BY BIOME
+names(data)
+data.predict.bio <- data[, c(3, 8, 11, 16)]
+names(data.predict.bio)
+
+alltaxa.bio = lmer(log10.hra ~ -1 + log10.mass + realm + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+data.predict.bio$log10.hra <- predict(alltaxa.bio, newdata=data.predict.bio, re.form=NA)
+
+newdat <- data.predict.bio
+
+mm <- model.matrix(terms(alltaxa.bio),newdat)
+## or newdat$distance <- mm %*% fixef(fm1)
+pvar1 <- diag(mm %*% tcrossprod(vcov(alltaxa.bio),mm))
+tvar1 <- pvar1 + VarCorr(alltaxa.bio)$class[1] + VarCorr(alltaxa.bio)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+
+#Subset data for plotting
+data.terr <-data[ which(data$realm=='terrestrial'),]
+data.aq <-data[ which(data$realm=='aquatic'),]
+
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra, color = realm))
+
+g1 <- g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") 
+
+g1 + geom_point(data=data.terr, aes(x=log10.mass, y=log10.hra)) + geom_point(data=data.aq, aes(x=log10.mass, y=log10.hra))
+
+
+
+#########PLOT BY THERMOREGULATION
+names(data)
+data.predict.therm <- data[, c(3, 8, 11, 17)]
+
+alltaxa.therm = lmer(log10.hra ~ -1 + log10.mass + thermoregulation + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+data.predict.therm$log10.hra <- predict(alltaxa.therm, newdata=data.predict.therm, re.form=NA)
+
+newdat <- data.predict.therm
+
+mm <- model.matrix(terms(alltaxa.therm),newdat)
+## or newdat$distance <- mm %*% fixef(fm1)
+pvar1 <- diag(mm %*% tcrossprod(vcov(alltaxa.therm),mm))
+tvar1 <- pvar1 + VarCorr(alltaxa.therm)$class[1] + VarCorr(alltaxa.therm)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+
+#Subset data for plotting
+data.endo <-data[ which(data$thermoregulation=='endotherm'),]
+data.ecto <-data[ which(data$thermoregulation=='ectotherm'),]
+
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra, color = thermoregulation))
+
+g1 <- g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") 
+
+g1 + geom_point(data=data.endo, aes(x=log10.mass, y=log10.hra)) + geom_point(data=data.ecto, aes(x=log10.mass, y=log10.hra))
+
+
+
+
+#########PLOT BY LOCOMOTION
+names(data)
+data.predict.loc <- data[, c(3, 8, 11, 18)]
+
+alltaxa.loc = lmer(log10.hra ~ log10.mass + locomotion + 0 + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+data.predict.loc$log10.hra <- predict(alltaxa.loc, newdata=data.predict.loc, re.form=NA)
+newdat <- data.predict.loc
+
+mm <- model.matrix(terms(alltaxa.loc),newdat)
+## or newdat$distance <- mm %*% fixef(fm1)
+pvar1 <- diag(mm %*% tcrossprod(vcov(alltaxa.loc),mm))
+tvar1 <- pvar1 + VarCorr(alltaxa.loc)$class[1] + VarCorr(alltaxa.loc)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+
+#Subset data for plotting
+data.fly <-data[ which(data$locomotion=='flying'),]
+data.walk <-data[ which(data$locomotion=='walking'),]
+data.crawl <-data[ which(data$locomotion=='crawling'),]
+data.swim <-data[ which(data$locomotion=='swimming'),]
+
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra, color = locomotion))
+
+g1 <- g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") 
+
+g1 + geom_point(data=data.fly, aes(x=log10.mass, y=log10.hra)) + geom_point(data=data.walk, aes(x=log10.mass, y=log10.hra)) + geom_point(data=data.crawl, aes(x=log10.mass, y=log10.hra)) + geom_point(data=data.swim, aes(x=log10.mass, y=log10.hra))
+
+
+#########PLOT BY DIMENSION
+names(data)
+data.predict.dim <- data[, c(3, 8, 11, 20)]
+alltaxa.dim.int = lmer(log10.hra ~ dimension + log10.mass:dimension + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+
+data.predict.dim$log10.hra <- predict(alltaxa.dim.int, newdata=data.predict.dim, re.form=NA)
+newdat <- data.predict.dim
+
+mm <- model.matrix(terms(alltaxa.dim.int),newdat)
+## or newdat$distance <- mm %*% fixef(fm1)
+pvar1 <- diag(mm %*% tcrossprod(vcov(alltaxa.dim.int),mm))
+tvar1 <- pvar1 + VarCorr(alltaxa.dim.int)$class[1] + VarCorr(alltaxa.dim.int)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+
+#Subset data for plotting
+data.2D <-data[ which(data$dimension=='2D'),]
+data.3D <-data[ which(data$dimension=='3D'),]
+
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra, color = dimension))
+
+g1 <- g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") 
+
+g1 + geom_point(data=data.2D, aes(x=log10.mass, y=log10.hra)) + geom_point(data=data.3D, aes(x=log10.mass, y=log10.hra))
+
+
+#########PLOT BY TROPHIC GUILD
+names(data)
+data.predict.tg <- data[, c(3, 8, 11, 19)]
+alltaxa.tg.int = lmer(log10.hra ~ trophic.guild + log10.mass:trophic.guild + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+
+data.predict.tg$log10.hra <- predict(alltaxa.tg.int, newdata=data.predict.tg, re.form=NA)
+newdat <- data.predict.tg
+
+mm <- model.matrix(terms(alltaxa.tg.int),newdat)
+## or newdat$distance <- mm %*% fixef(fm1)
+pvar1 <- diag(mm %*% tcrossprod(vcov(alltaxa.tg.int),mm))
+tvar1 <- pvar1 + VarCorr(alltaxa.tg.int)$class[1] + VarCorr(alltaxa.tg.int)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+
+#Subset data for plotting
+data.carnivore <-data[ which(data$trophic.guild=='carnivore'),]
+data.herbivore <-data[ which(data$trophic.guild=='herbivore'),]
+
+#fixef
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra, color = trophic.guild))
+
+g1 <- g0 + annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.1) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY") 
+
+g1 + geom_point(data=data.carnivore, aes(x=log10.mass, y=log10.hra)) + geom_point(data=data.herbivore, aes(x=log10.mass, y=log10.hra))
+
+```
+
+Creating the online Figure A2.
+
+```{r, Figure A2}
+
+### Make predictions using the full model against a mock dataset.
+data.FM <-read.csv("C:/Research/Home Range Scaling/Tamburelloetal_FigA2_MassPredictionDataAllModels.csv", header=T, sep=",")
+str(data.FM)
+
+trophic.guild1 = relevel(data.FM$trophic.guild, "herbivore")
+locomotion1 = relevel(data.FM$locomotion, "swimming")
+dimension1 = relevel(data.FM$dimension, "2D")
+data.FM$log10.hra
+
+#### Feed groups into full HRA model
+
+alltaxa.full = lmer(log10.hra ~ log10.mass + log10.mass:dimension + log10.mass:trophic.guild + trophic.guild + locomotion + dimension + (1|class) + (1|primarymethod), data=data, REML = FALSE)
+summary(alltaxa.full)
+r.squaredGLMM(alltaxa.full)
+
+#PREDICTIONS for HRA for all combo groups
+data.FM$log10.hra <- predict(alltaxa.full, newdata=data.FM)
+data.FM$group <- as.factor(data.FM$group)
+newdat<- data.FM
+str(data.FM)
+
+####### Plotting with Confidence intervals from glmm.wikidot.com/faq
+
+mm <- model.matrix(terms(alltaxa.full),newdat)
+pvar1 <- diag(mm %*% tcrossprod(vcov(alltaxa.full),mm))
+tvar1 <- pvar1 + VarCorr(alltaxa.full)$class[1]+ VarCorr(alltaxa.full)$primarymethod[1] ## must be adapted for more complex models
+tvar1 <- 
+  newdat <- data.frame(
+    newdat
+    , plo = newdat$log10.hra-2*sqrt(pvar1)
+    , phi = newdat$log10.hra+2*sqrt(pvar1)
+    , tlo = newdat$log10.hra-2*sqrt(tvar1)
+    , thi = newdat$log10.hra+2*sqrt(tvar1)
+  )
+str(newdat)
+
+#plot confidence
+
+#subset newdat by taxa
+
+newdat.fish <- newdat[ which(newdat$class=='actinopterygii'),]
+newdat.mammals <- newdat[ which(newdat$class=='mammalia'),]
+newdat.reptiles <- newdat[ which(newdat$class=='reptilia'),]
+newdat.birds <-newdat[ which(newdat$class=='aves'),]
+
+grp1 <-data.FM[ which(data.FM$group=='1'),]
+grp2 <-data.FM[ which(data.FM$group=='2'),]
+grp3 <-data.FM[ which(data.FM$group=='3'),]
+grp4 <-data.FM[ which(data.FM$group=='4'),]
+grp5 <-data.FM[ which(data.FM$group=='5'),]
+grp6 <-data.FM[ which(data.FM$group=='6'),]
+grp7 <-data.FM[ which(data.FM$group=='7'),]
+grp8 <-data.FM[ which(data.FM$group=='8'),]
+grp9 <-data.FM[ which(data.FM$group=='9'),]
+
+#### Plot with 95% CI for ALL GROUPS
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra, color=group))
+g0 +  annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                               panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_point() + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.2) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY")
+
+#No 95% CI ribbon
+g0 <- ggplot(newdat, aes(x=log10.mass, y=log10.hra, color=group))
+g0 +  annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                           panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_point() + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY")
+
+#########JUST BIRDS
+g0 <- ggplot(newdat.birds, aes(x=log10.mass, y=log10.hra, color=group))
+g0 +  annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                               panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_point() + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.2) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY")
+
+#########JUST MAMMALS
+g0 <- ggplot(newdat.mammals, aes(x=log10.mass, y=log10.hra, color=group))
+g0 +  annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                               panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_point() + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.2) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY")
+
+#########JUST REPTILES
+g0 <- ggplot(newdat.reptiles, aes(x=log10.mass, y=log10.hra, color=group))
+g0 +  annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                               panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_point() + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.2) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY")
+
+#########JUST FISH
+g0 <- ggplot(newdat.fish, aes(x=log10.mass, y=log10.hra, color=group))
+g0 +  annotation_logticks(short = unit(2,"mm"), mid = unit(3,"mm"), long = unit(4,"mm")) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),                                                                                                              panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + geom_point() + geom_ribbon(aes(ymin = plo, ymax = phi, linetype = NA), alpha=0.2) + geom_line(aes(ymin = plo, ymax = phi)) + ggtitle("CI based on fixed-effects uncertainty ONLY")
+
+
+```

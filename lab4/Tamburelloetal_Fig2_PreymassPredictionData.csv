@@ -1,0 +1,37 @@
+group,taxon,mass,log10.mass,log10.preymass,locomotion,dimension,class,primarymethod
+2,marine fish,1,0.00,-1.02,swimming,2D,actinopterygii,telemetry
+2,marine fish,5,0.70,-0.59,swimming,2D,actinopterygii,telemetry
+2,marine fish,10,1.00,-0.39,swimming,2D,actinopterygii,telemetry
+2,marine fish,50,1.70,0.04,swimming,2D,actinopterygii,telemetry
+2,marine fish,100,2.00,0.23,swimming,2D,actinopterygii,telemetry
+2,marine fish,501,2.70,0.67,swimming,2D,actinopterygii,telemetry
+2,marine fish,1000,3.00,0.85,swimming,2D,actinopterygii,telemetry
+2,marine fish,3250,3.51,1.17,swimming,2D,actinopterygii,telemetry
+4,lake fish,50,1.70,0.04,swimming,3D,actinopterygii,telemetry
+4,lake fish,100,2.00,0.23,swimming,3D,actinopterygii,telemetry
+4,lake fish,501,2.70,0.67,swimming,3D,actinopterygii,telemetry
+4,lake fish,1000,3.00,0.85,swimming,3D,actinopterygii,telemetry
+4,lake fish,2100,3.32,1.05,swimming,3D,actinopterygii,telemetry
+7,mammals,5,0.70,-1.01,walking,2D,mammalia,telemetry
+7,mammals,10,1.00,-0.608,walking,2D,mammalia,telemetry
+7,mammals,50,1.70,0.33,walking,2D,mammalia,telemetry
+7,mammals,100,2.00,0.732,walking,2D,mammalia,telemetry
+7,mammals,501,2.70,1.67,walking,2D,mammalia,telemetry
+7,mammals,1000,3.00,2.072,walking,2D,mammalia,telemetry
+7,mammals,5012,3.70,3.01,walking,2D,mammalia,telemetry
+7,mammals,10000,4.00,3.412,walking,2D,mammalia,telemetry
+7,mammals,50119,4.70,4.35,walking,2D,mammalia,telemetry
+7,mammals,111943,5.05,4.752,walking,2D,mammalia,telemetry
+5,snakes,5,0.70,-0.17,crawling,2D,reptilia,telemetry
+5,snakes,10,1.00,0.16,crawling,2D,reptilia,telemetry
+5,snakes,50,1.70,0.96,crawling,2D,reptilia,telemetry
+5,snakes,100,2.00,1.3,crawling,2D,reptilia,telemetry
+5,snakes,501,2.70,2.09,crawling,2D,reptilia,telemetry
+5,snakes,1200,3.08,2.52,crawling,2D,reptilia,telemetry
+9,birds,5,0.70,-0.17,flying,3D,aves,telemetry
+9,birds,10,1.00,0.15,flying,3D,aves,telemetry
+9,birds,50,1.70,0.88,flying,3D,aves,telemetry
+9,birds,100,2.00,1.2,flying,3D,aves,telemetry
+9,birds,501,2.70,1.93,flying,3D,aves,telemetry
+9,birds,1000,3.00,2.24,flying,3D,aves,telemetry
+9,birds,3000,3.48,2.98,flying,3D,aves,telemetry
