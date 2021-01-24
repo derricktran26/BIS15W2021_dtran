@@ -132,19 +132,22 @@ anyNA(herbi_hra)
 anyNA(carni_hra)
 ```
 
-
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 **9. Make a new dataframe `deer` that is limited to the mean mass, log10 mass, family, genus, and species of deer in the database. The family for deer is cervidae. Arrange the data in descending order by log10 mass. Which is the largest deer? What is its common name?**  
 ```{r}
 deer<-filter(homerange, family == "cervidae")
-deer
 ```
+
 ```{r}
 deer_data<- deer%>% select("mean.mass.g", "log10.mass", "family", "genus", "species")
-structure(deer_data)
+str(deer_data)
 ```
-```{r}
-deer_data[order(deer_data$log10.mass),desce=TRUE]
 
+```{r}
+#deer_data[order(deer_data$log10.mass),desc=TRUE]
 ```
 
 ```{r}
@@ -152,39 +155,28 @@ deer_data
 #this is now sorted such that log10.mass is ordered by descending order
 ```
 #The largest deer would be alces alces otherwise known as Moose or Elk
+</div>
 
+There are errors here and your code will not run or knit.
 
 **10. As measured by the data, which snake species has the smallest homerange? Show all of your work, please. Look this species up online and tell me about it!** **Snake is found in taxon column**    
 ```{r}
 snake<-filter(homerange, taxon =="snakes")
-snake
 ```
+
 ```{r}
 snake_data <- snake%>%select("mean.hra.m2","mean.mass.g", "log10.mass", "family", "genus", "species")
 ```
 
 
 ```{r}
-snake_data[order(snake_data$mean.hra.m2), descending =TRUE]
-
+#snake_data[order(snake_data$mean.hra.m2), descending =TRUE]
 ```
+
 ```{r}
 snake_data %>% slice_min(mean.hra.m2)
 ```
 According to wikipedia, bitis schneideri's common name is  Namaqua dwarf adder,spotted dwarf adder, Schneider's adder. this is a venomous snake and it is native to a small coastal region that straddle the border between namibia and south africa. its average length comes in at about 7-10 inches. One fun fact is that they actually have a high mortality rate and they make up for that by have a high reproductive rate, and also there is no anti venom for this species though its venom repportedly is painful(a range of things will happen to you) but you will most likely recover with no long term damage
+
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
