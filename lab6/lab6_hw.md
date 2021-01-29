@@ -1,7 +1,7 @@
 ---
 title: "Lab 6 Homework"
 author: "Derrick Tran"
-date: "2021-01-25"
+date: "2021-01-27"
 output:
   html_document: 
     theme: spacelab
@@ -192,6 +192,10 @@ refocus_fisheries
 ## 10 Albania Sharks, rays, chima~ Squatinidae       10903XXXXX          2004     4
 ## # ... with 376,761 more rows
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 5. Based on the asfis_species_number, how many distinct fish species were caught as part of these data?
 
@@ -229,10 +233,6 @@ fisheries_tidy%>%
 ```
 
 ```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
-```
 ## # A tibble: 184 x 2
 ##    country                  max_catch_2k
 ##    <fct>                           <dbl>
@@ -258,10 +258,6 @@ fisheries_tidy%>%
   group_by(country)%>%
   filter(asfis_species_name=="Sardina pilchardus")%>%
   summarise(max_sardines=max(catch,na.rm = T))
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ```
@@ -295,10 +291,6 @@ fisheries_tidy%>%
 ```
 
 ```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
-```
 ## # A tibble: 5 x 2
 ##   country max_ceph
 ##   <fct>      <dbl>
@@ -318,10 +310,6 @@ fisheries_tidy%>%
   summarise(max_ceph=max(catch,na.rm = T))%>%
   arrange(desc(max_ceph))%>%
   head(arrange(max_ceph,desc(catch)),n=5)
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ```
@@ -350,10 +338,6 @@ fisheries_tidy%>%
 ```
 
 ```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
-```
 ## # A tibble: 1,350 x 2
 ##    asfis_species_name       max_spec_catch
 ##    <chr>                             <dbl>
@@ -369,6 +353,7 @@ fisheries_tidy%>%
 ## 10 Oncorhynchus gorbuscha              991
 ## # ... with 1,340 more rows
 ```
+</div>
 
 10. Use the data to do at least one analysis of your choice.
 My familys from vietnam and one of the most well known exports is fish sauce so lets see what fish species was caught the most during 2008( random year ). we want to ignore species that dont count and ones with 0 because i think they mess up the max function
@@ -380,10 +365,6 @@ fisheries_tidy%>%
   group_by(asfis_species_name)%>%
   summarise(viet_fish_2k8=max(catch,na.rm = T))%>%
   arrange(desc(viet_fish_2k8))
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ```

@@ -1,6 +1,6 @@
 ---
 title: "dplyr Superhero" 
-date: "2021-01-21"
+date: "2021-01-26"
 output:
   html_document: 
     theme: spacelab
@@ -31,10 +31,10 @@ library("tidyverse")
 ```
 
 ```
-## v ggplot2 3.3.3     v purrr   0.3.4
-## v tibble  3.0.4     v dplyr   1.0.2
-## v tidyr   1.1.2     v stringr 1.4.0
-## v readr   1.4.0     v forcats 0.5.0
+## √ ggplot2 3.3.3     √ purrr   0.3.4
+## √ tibble  3.0.5     √ dplyr   1.0.3
+## √ tidyr   1.1.2     √ stringr 1.4.0
+## √ readr   1.4.0     √ forcats 0.5.0
 ```
 
 ```
@@ -450,6 +450,10 @@ asgardian
 ## 2 Thor      Asgardian
 ## 3 Thor Girl Asgardian
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 8. Among the bad guys, who are the male humans over 200 inches in height?
 
@@ -475,6 +479,7 @@ bad_guys%>%
 ## 10 Doomsday          244
 ## # ... with 15 more rows
 ```
+</div>
 
 9. OK, so are there more good guys or bad guys that are bald (personal interest)?
 

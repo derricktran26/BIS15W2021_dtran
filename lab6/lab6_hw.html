@@ -11,7 +11,7 @@
 
 <meta name="author" content="Derrick Tran" />
 
-<meta name="date" content="2021-01-25" />
+<meta name="date" content="2021-01-27" />
 
 <title>Lab 6 Homework</title>
 
@@ -191,7 +191,7 @@ summary {
 
 <h1 class="title toc-ignore">Lab 6 Homework</h1>
 <h4 class="author">Derrick Tran</h4>
-<h4 class="date">2021-01-25</h4>
+<h4 class="date">2021-01-27</h4>
 
 </div>
 
@@ -338,6 +338,10 @@ refocus_fisheries</code></pre>
 ##  9 Albania Sharks, rays, chima~ Squatinidae       10903XXXXX          2003     1
 ## 10 Albania Sharks, rays, chima~ Squatinidae       10903XXXXX          2004     4
 ## # ... with 376,761 more rows</code></pre>
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class="blue">
 <ol start="5" style="list-style-type: decimal">
 <li>Based on the asfis_species_number, how many distinct fish species were caught as part of these data?</li>
 </ol>
@@ -366,7 +370,6 @@ refocus_fisheries</code></pre>
   group_by(country)%&gt;%
   summarise(max_catch_2k=max(catch,na.rm=T))%&gt;%
   arrange(desc(max_catch_2k))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 184 x 2
 ##    country                  max_catch_2k
 ##    &lt;fct&gt;                           &lt;dbl&gt;
@@ -390,7 +393,6 @@ refocus_fisheries</code></pre>
   group_by(country)%&gt;%
   filter(asfis_species_name==&quot;Sardina pilchardus&quot;)%&gt;%
   summarise(max_sardines=max(catch,na.rm = T))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 37 x 2
 ##    country  max_sardines
 ##    &lt;fct&gt;           &lt;dbl&gt;
@@ -416,7 +418,6 @@ refocus_fisheries</code></pre>
   summarise(max_ceph=max(catch,na.rm = T))%&gt;%
   arrange(desc(max_ceph))%&gt;%
   head(arrange(max_ceph,desc(catch)),n=5)</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 5 x 2
 ##   country max_ceph
 ##   &lt;fct&gt;      &lt;dbl&gt;
@@ -433,7 +434,6 @@ refocus_fisheries</code></pre>
   summarise(max_ceph=max(catch,na.rm = T))%&gt;%
   arrange(desc(max_ceph))%&gt;%
   head(arrange(max_ceph,desc(catch)),n=5)</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 5 x 2
 ##   country                  max_ceph
 ##   &lt;fct&gt;                       &lt;dbl&gt;
@@ -453,7 +453,6 @@ refocus_fisheries</code></pre>
   group_by(asfis_species_name)%&gt;%
   summarise(max_spec_catch=max(catch, na.rm = T))%&gt;%
   arrange(desc(max_spec_catch))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 1,350 x 2
 ##    asfis_species_name       max_spec_catch
 ##    &lt;chr&gt;                             &lt;dbl&gt;
@@ -468,6 +467,7 @@ refocus_fisheries</code></pre>
 ##  9 Loligo spp                          991
 ## 10 Oncorhynchus gorbuscha              991
 ## # ... with 1,340 more rows</code></pre>
+</div>
 <ol start="10" style="list-style-type: decimal">
 <li>Use the data to do at least one analysis of your choice. My familys from vietnam and one of the most well known exports is fish sauce so lets see what fish species was caught the most during 2008( random year ). we want to ignore species that dont count and ones with 0 because i think they mess up the max function</li>
 </ol>
@@ -477,7 +477,6 @@ refocus_fisheries</code></pre>
   group_by(asfis_species_name)%&gt;%
   summarise(viet_fish_2k8=max(catch,na.rm = T))%&gt;%
   arrange(desc(viet_fish_2k8))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 5 x 2
 ##   asfis_species_name viet_fish_2k8
 ##   &lt;chr&gt;                      &lt;dbl&gt;
