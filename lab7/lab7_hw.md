@@ -1,7 +1,7 @@
 ---
 title: "Lab 7 Homework"
 author: "Derrick Tran"
-date: "2021-02-02"
+date: "2021-02-03"
 output:
   html_document: 
     theme: spacelab
@@ -270,6 +270,10 @@ amniota_tidy%>%
 ##        <int>
 ## 1     528200
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 
 ```r
@@ -286,6 +290,7 @@ amphibio_tidy%>%
 ##        <int>
 ## 1     182085
 ```
+</div>
 
 **6. Use the package `naniar` to produce a summary, including percentages, of missing data in each column for the `amniota` data.**  
 
@@ -361,6 +366,10 @@ purrr::map_df(~ sum(is.na(.))) %>%
 ## 10 Crepu        6608
 ## # ... with 28 more rows
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 **8. For the `amniota` data, calculate the number of NAs in the `egg_mass_g` column sorted by taxonomic class; i.e. how many NA's are present in the `egg_mass_g` column in birds, mammals, and reptiles? Does this results make sense biologically? How do these results affect your interpretation of NA's?**  
 
@@ -387,6 +396,7 @@ amniota_tidy%>%
 ## 10 Aves     sclateri              NA    13
 ## # ... with 16,566 more rows
 ```
+</div>
 
 **9. The `amphibio` data have variables that classify species as fossorial (burrowing), terrestrial, aquatic, or arboreal.Calculate the number of NA's in each of these variables. Do you think that the authors intend us to think that there are NA's in these columns or could they represent something else? Explain.**
 
@@ -445,8 +455,8 @@ Table: Data summary
 
 **Variable type: numeric**
 
-|skim_variable           | n_missing| complete_rate|    mean|      sd|    p0|  p25|    p50|    p75|    p100|hist                                     |
-|:-----------------------|---------:|-------------:|-------:|-------:|-----:|----:|------:|------:|-------:|:----------------------------------------|
+|skim_variable           | n_missing| complete_rate|    mean|      sd|    p0|  p25|    p50|    p75|    p100|hist  |
+|:-----------------------|---------:|-------------:|-------:|-------:|-----:|----:|------:|------:|-------:|:-----|
 |Fos                     |      6053|          0.11|    1.00|    0.00|  1.00|  1.0|   1.00|   1.00|     1.0|▁▁▇▁▁ |
 |Ter                     |      1104|          0.84|    1.00|    0.00|  1.00|  1.0|   1.00|   1.00|     1.0|▁▁▇▁▁ |
 |Aqu                     |      2810|          0.59|    1.00|    0.00|  1.00|  1.0|   1.00|   1.00|     1.0|▁▁▇▁▁ |
@@ -575,8 +585,8 @@ Table: Data summary
 
 **Variable type: numeric**
 
-|skim_variable                         | n_missing| complete_rate|     mean|         sd|        p0|    p25|    p50|     p75|        p100|hist                                     |
-|:-------------------------------------|---------:|-------------:|--------:|----------:|---------:|------:|------:|-------:|-----------:|:----------------------------------------|
+|skim_variable                         | n_missing| complete_rate|     mean|         sd|        p0|    p25|    p50|     p75|        p100|hist  |
+|:-------------------------------------|---------:|-------------:|--------:|----------:|---------:|------:|------:|-------:|-----------:|:-----|
 |female_maturity_d                     |     17849|          0.16|   691.17|    1358.20| -30258.71| 288.37| 365.00|  819.34| 9.13125e+03|▁▁▁▇▂ |
 |litter_or_clutch_size_n               |      8244|          0.61|     3.83|       5.17|      0.90|   2.00|   2.80|    4.15| 1.56000e+02|▇▁▁▁▁ |
 |litters_or_clutches_per_y             |     16374|          0.23|     1.75|       1.83|      0.12|   1.00|   1.05|    2.00| 5.20000e+01|▇▁▁▁▁ |

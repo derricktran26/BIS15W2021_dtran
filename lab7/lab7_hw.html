@@ -11,7 +11,7 @@
 
 <meta name="author" content="Derrick Tran" />
 
-<meta name="date" content="2021-02-02" />
+<meta name="date" content="2021-02-03" />
 
 <title>Lab 7 Homework</title>
 
@@ -191,7 +191,7 @@ summary {
 
 <h1 class="title toc-ignore">Lab 7 Homework</h1>
 <h4 class="author">Derrick Tran</h4>
-<h4 class="date">2021-02-02</h4>
+<h4 class="date">2021-02-03</h4>
 
 </div>
 
@@ -372,6 +372,10 @@ amniota_tidy%&gt;%
 ##   number_nas
 ##        &lt;int&gt;
 ## 1     528200</code></pre>
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class="blue">
 <pre class="r"><code>amphibio_tidy&lt;-amphibio%&gt;%
   na_if(&quot;0&quot;)
 
@@ -381,6 +385,7 @@ amphibio_tidy%&gt;%
 ##   number_nas
 ##        &lt;int&gt;
 ## 1     182085</code></pre>
+</div>
 <p><strong>6. Use the package <code>naniar</code> to produce a summary, including percentages, of missing data in each column for the <code>amniota</code> data.</strong></p>
 <pre class="r"><code>naniar::miss_var_summary(amniota_tidy)</code></pre>
 <pre><code>## # A tibble: 36 x 3
@@ -433,6 +438,10 @@ purrr::map_df(~ sum(is.na(.))) %&gt;%
 ##  9 Wet_cold     6625
 ## 10 Crepu        6608
 ## # ... with 28 more rows</code></pre>
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class="blue">
 <p><strong>8. For the <code>amniota</code> data, calculate the number of NAs in the <code>egg_mass_g</code> column sorted by taxonomic class; i.e. how many NA’s are present in the <code>egg_mass_g</code> column in birds, mammals, and reptiles? Does this results make sense biologically? How do these results affect your interpretation of NA’s?</strong></p>
 <pre class="r"><code>amniota_tidy%&gt;%
   select(class,species,egg_mass_g)%&gt;%
@@ -451,6 +460,7 @@ purrr::map_df(~ sum(is.na(.))) %&gt;%
 ##  9 Reptilia intermedius           NA    14
 ## 10 Aves     sclateri              NA    13
 ## # ... with 16,566 more rows</code></pre>
+</div>
 <p><strong>9. The <code>amphibio</code> data have variables that classify species as fossorial (burrowing), terrestrial, aquatic, or arboreal.Calculate the number of NA’s in each of these variables. Do you think that the authors intend us to think that there are NA’s in these columns or could they represent something else? Explain.</strong></p>
 <pre class="r"><code>amphibio_tidy%&gt;%
   select(Fos,Ter,Aqu,Arb)%&gt;%
@@ -1265,19 +1275,19 @@ purrr::map_df(~ sum(is.na(.))) %&gt;%
 </tbody>
 </table>
 <p><strong>Variable type: numeric</strong></p>
-<table>
+<table style="width:100%;">
 <colgroup>
-<col width="22%" />
-<col width="5%" />
+<col width="28%" />
+<col width="7%" />
+<col width="10%" />
+<col width="6%" />
 <col width="8%" />
+<col width="7%" />
+<col width="5%" />
 <col width="5%" />
 <col width="6%" />
-<col width="5%" />
+<col width="9%" />
 <col width="4%" />
-<col width="4%" />
-<col width="4%" />
-<col width="7%" />
-<col width="24%" />
 </colgroup>
 <thead>
 <tr class="header">
