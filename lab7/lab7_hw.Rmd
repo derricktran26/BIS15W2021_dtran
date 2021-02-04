@@ -103,6 +103,10 @@ amniota_tidy<-amniota%>%
 amniota_tidy%>%
   summarise(number_nas=sum(is.na(amniota_tidy)))
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 ```{r}
 amphibio_tidy<-amphibio%>%
@@ -111,6 +115,7 @@ amphibio_tidy<-amphibio%>%
 amphibio_tidy%>%
   summarise(number_nas=sum(is.na(amphibio_tidy)))
 ```
+</div>
 
 **6. Use the package `naniar` to produce a summary, including percentages, of missing data in each column for the `amniota` data.**  
 ```{r}
@@ -133,6 +138,10 @@ purrr::map_df(~ sum(is.na(.))) %>%
     values_to = "num_nas") %>% 
   arrange(desc(num_nas))
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 **8. For the `amniota` data, calculate the number of NAs in the `egg_mass_g` column sorted by taxonomic class; i.e. how many NA's are present in the `egg_mass_g` column in birds, mammals, and reptiles? Does this results make sense biologically? How do these results affect your interpretation of NA's?**  
 
@@ -141,6 +150,7 @@ amniota_tidy%>%
   select(class,species,egg_mass_g)%>%
   count(class,species,egg_mass_g,sort = TRUE)
 ```
+</div>
 
 **9. The `amphibio` data have variables that classify species as fossorial (burrowing), terrestrial, aquatic, or arboreal.Calculate the number of NA's in each of these variables. Do you think that the authors intend us to think that there are NA's in these columns or could they represent something else? Explain.**
 ```{r}
