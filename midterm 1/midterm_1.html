@@ -11,7 +11,7 @@
 
 <meta name="author" content="Derrick Tran" />
 
-<meta name="date" content="2021-01-28" />
+<meta name="date" content="2021-02-09" />
 
 <title>Midterm 1</title>
 
@@ -191,7 +191,7 @@ summary {
 
 <h1 class="title toc-ignore">Midterm 1</h1>
 <h4 class="author">Derrick Tran</h4>
-<h4 class="date">2021-01-28</h4>
+<h4 class="date">2021-02-09</h4>
 
 </div>
 
@@ -210,14 +210,16 @@ summary {
 <div id="questions" class="section level2">
 <h2>Questions</h2>
 <p><strong>1. (2 points) Briefly explain how R, RStudio, and GitHub work together to make work flows in data science transparent and repeatable. What is the advantage of using RMarkdown in this context?</strong><br />
-so Rstudio is basically a more convenient way to code things into the R console, this way we can use packages and other useful tools to make our work easier. how this works in tandem with github is that your work will be backed up to a repository other then your hard drive, so if someone else needs to look at your work its there and you can look at other peoples work too. It is good to use RMarkdown in this context so we can see your “work” from your code, its so we can see the outputs and dont have to run the code chunks again since you already would’ve done so <strong>2. (2 points) What are the three types of <code>data structures</code> that we have discussed? Why are we using data frames for BIS 15L?</strong> We are using data frames, data matrices, and vectors. We are using data frames for BIS 15L because it seems a lot more efficient and easier finding and pulling up specific data from files. it is convenient to find and do stuff with the data stored in a data frame. Furthermore, I think most of the files that we would download (data files) seem to have their data stored in a data frame or this is what i have noticed when downloading stuff</p>
+so Rstudio is basically a more convenient way to code things into the R console, this way we can use packages and other useful tools to make our work easier. how this works in tandem with github is that your work will be backed up to a repository other then your hard drive, so if someone else needs to look at your work its there and you can look at other peoples work too. It is good to use RMarkdown in this context so we can see your “work” from your code, its so we can see the outputs and dont have to run the code chunks again since you already would’ve done so.</p>
+<p><strong>2. (2 points) What are the three types of <code>data structures</code> that we have discussed? Why are we using data frames for BIS 15L?</strong> We are using data frames, data matrices, and vectors. We are using data frames for BIS 15L because it seems a lot more efficient and easier finding and pulling up specific data from files. it is convenient to find and do stuff with the data stored in a data frame. Furthermore, I think most of the files that we would download (data files) seem to have their data stored in a data frame or this is what i have noticed when downloading stuff.</p>
+<p><em>In your responses to questions 1 and 2, please make sure that your grammar and punctuation are professional. This is an exam, but also meant to simulate the kind of analysis you would be asked to perform by an employer.</em></p>
 <p>In the midterm 1 folder there is a second folder called <code>data</code>. Inside the <code>data</code> folder, there is a .csv file called <code>ElephantsMF</code>. These data are from Phyllis Lee, Stirling University, and are related to Lee, P., et al. (2013), “Enduring consequences of early experiences: 40-year effects on survival and success among African elephants (Loxodonta africana),” Biology Letters, 9: 20130011. <a href="https://www.kaggle.com/mostafaelseidy/elephantsmf">kaggle</a>.</p>
 <pre class="r"><code>getwd()</code></pre>
-<pre><code>## [1] &quot;C:/Users/Derrick/Documents/GitHub/BIS15W2021_dtran/midterm 1&quot;</code></pre>
+<pre><code>## [1] &quot;/Users/Joel/Desktop/BIS15W2021_dtran/midterm 1&quot;</code></pre>
 <p><strong>3. (2 points) Please load these data as a new object called <code>elephants</code>. Use the function(s) of your choice to get an idea of the structure of the data. Be sure to show the class of each variable.</strong></p>
 <pre class="r"><code>elephants&lt;-readr::read_csv(&quot;ElephantsMF.csv&quot;, na = c(&quot;&quot;, &quot;-99&quot;, &quot;-&quot;))</code></pre>
 <pre><code>## 
-## -- Column specification --------------------------------------------------------
+## ── Column specification ────────────────────────────────────────────────────────
 ## cols(
 ##   Age = col_double(),
 ##   Height = col_double(),
@@ -227,6 +229,10 @@ so Rstudio is basically a more convenient way to code things into the R console,
 <pre class="r"><code>names(elephants)</code></pre>
 <pre><code>## [1] &quot;Age&quot;    &quot;Height&quot; &quot;Sex&quot;</code></pre>
 <pre class="r"><code>elephants&lt;-rename(elephants, age=&quot;Age&quot;,height=&quot;Height&quot;,sex=&quot;Sex&quot;)</code></pre>
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class="blue">
 <pre class="r"><code>#elephants&lt;-as.factor(elephants$sex)
 data.frame(sex&lt;-as.factor(elephants$sex))</code></pre>
 <pre><code>##     sex....as.factor.elephants.sex.
@@ -518,6 +524,8 @@ data.frame(sex&lt;-as.factor(elephants$sex))</code></pre>
 ## 286                               F
 ## 287                               F
 ## 288                               F</code></pre>
+<p><em>Since the data are already a data frame, you don’t need to use the data.frame command. Your first command (line 62) was close but not quite accurate. Please have a look at the key as changing the class of data is important.</em></p>
+</div>
 <p><strong>5. (2 points) How many male and female elephants are represented in the data?</strong></p>
 <pre class="r"><code>elephants%&gt;%
   select(age,height,sex)%&gt;%
@@ -545,11 +553,12 @@ data.frame(sex&lt;-as.factor(elephants$sex))</code></pre>
 <pre class="r"><code>elephants%&gt;%
   select(age,height,sex)%&gt;%
   group_by(sex)%&gt;%
-summarise(avg_age=mean(age,na.rm=T),avg_height=mean(height,na.rm=T))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+  summarise(avg_age=mean(age,na.rm=T),
+            avg_height=mean(height,na.rm=T)
+            )</code></pre>
 <pre><code>## # A tibble: 2 x 3
 ##   sex   avg_age avg_height
-##   &lt;chr&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+## * &lt;chr&gt;   &lt;dbl&gt;      &lt;dbl&gt;
 ## 1 F       12.8        190.
 ## 2 M        8.95       185.</code></pre>
 <p><strong>8. (2 points) How does the average height of elephants compare by sex for individuals over 25 years old. Include the min and max height as well as the number of individuals in the sample as part of your analysis.</strong></p>
@@ -557,11 +566,14 @@ summarise(avg_age=mean(age,na.rm=T),avg_height=mean(height,na.rm=T))</code></pre
   select(age,height,sex)%&gt;%
   filter(age&gt;25)%&gt;%
   group_by(sex)%&gt;%
-  summarise(avg_age=mean(age,na.rm=T),avg_height=mean(height,na.rm=T),min_height=min(height),max_height=max(height))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+  summarise(avg_age=mean(age,na.rm=T),
+            avg_height=mean(height,na.rm=T),
+            min_height=min(height),
+            max_height=max(height)
+            )</code></pre>
 <pre><code>## # A tibble: 2 x 5
 ##   sex   avg_age avg_height min_height max_height
-##   &lt;chr&gt;   &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## * &lt;chr&gt;   &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
 ## 1 F        27.3       233.       206.       278.
 ## 2 M        26.6       273.       237.       304.</code></pre>
 <p>For the next series of questions, we will use data from a study on vertebrate community composition and impacts from defaunation in <a href="https://en.wikipedia.org/wiki/Gabon">Gabon, Africa</a>. One thing to notice is that the data include 24 separate transects. Each transect represents a path through different forest management areas.</p>
@@ -569,19 +581,19 @@ summarise(avg_age=mean(age,na.rm=T),avg_height=mean(height,na.rm=T))</code></pre
 <p><strong>9. (2 points) Load <code>IvindoData_DryadVersion.csv</code> and use the function(s) of your choice to get an idea of the overall structure. Change the variables <code>HuntCat</code> and <code>LandUse</code> to factors.</strong></p>
 <pre class="r"><code>defauna&lt;- readr::read_csv(&quot;IvindoData_DryadVersion.csv&quot;, na = c(&quot;&quot;, &quot;-99&quot;, &quot;-&quot;))</code></pre>
 <pre><code>## 
-## -- Column specification --------------------------------------------------------
+## ── Column specification ────────────────────────────────────────────────────────
 ## cols(
 ##   .default = col_double(),
 ##   HuntCat = col_character(),
 ##   LandUse = col_character()
 ## )
-## i Use `spec()` for the full column specifications.</code></pre>
+## ℹ Use `spec()` for the full column specifications.</code></pre>
 <p><strong>10. (4 points) For the transects with high and moderate hunting intensity, how does the average diversity of birds and mammals compare?</strong></p>
 <pre class="r"><code>structure(defauna)</code></pre>
 <pre><code>## # A tibble: 24 x 26
 ##    TransectID Distance HuntCat NumHouseholds LandUse Veg_Rich Veg_Stems
 ##         &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;
-##  1          1     7.14 Modera~            54 Park        16.7      31.2
+##  1          1     7.14 Modera…            54 Park        16.7      31.2
 ##  2          2    17.3  None               54 Park        15.8      37.4
 ##  3          2    18.3  None               29 Park        16.9      32.3
 ##  4          3    20.8  None               29 Logging     12.4      29.4
@@ -591,7 +603,7 @@ summarise(avg_age=mean(age,na.rm=T),avg_height=mean(height,na.rm=T))</code></pre
 ##  8          7    19.8  None               54 Logging     13.2      32.6
 ##  9          8     5.78 High               25 Neither     12.6      23.7
 ## 10          9     5.13 High               73 Logging     16        27.1
-## # ... with 14 more rows, and 19 more variables: Veg_liana &lt;dbl&gt;, Veg_DBH &lt;dbl&gt;,
+## # … with 14 more rows, and 19 more variables: Veg_liana &lt;dbl&gt;, Veg_DBH &lt;dbl&gt;,
 ## #   Veg_Canopy &lt;dbl&gt;, Veg_Understory &lt;dbl&gt;, RA_Apes &lt;dbl&gt;, RA_Birds &lt;dbl&gt;,
 ## #   RA_Elephant &lt;dbl&gt;, RA_Monkeys &lt;dbl&gt;, RA_Rodent &lt;dbl&gt;, RA_Ungulate &lt;dbl&gt;,
 ## #   Rich_AllSpecies &lt;dbl&gt;, Evenness_AllSpecies &lt;dbl&gt;,
@@ -605,25 +617,29 @@ summarise(avg_age=mean(age,na.rm=T),avg_height=mean(height,na.rm=T))</code></pre
   filter(hunt_cat==&quot;Moderate&quot;|hunt_cat==&quot;High&quot;)%&gt;%
   group_by(hunt_cat)%&gt;%
   summarise(avg_diversity_bird=mean(diversity_bird_species),avg_div_mam=mean(diversity_mammal_species))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 2 x 3
 ##   hunt_cat avg_diversity_bird avg_div_mam
-##   &lt;chr&gt;                 &lt;dbl&gt;       &lt;dbl&gt;
+## * &lt;chr&gt;                 &lt;dbl&gt;       &lt;dbl&gt;
 ## 1 High                   1.66        1.74
 ## 2 Moderate               1.62        1.68</code></pre>
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class="blue">
 <p><strong>11. (4 points) One of the conclusions in the study is that the relative abundance of animals drops off the closer you get to a village. Let’s try to reconstruct this (without the statistics). How does the relative abundance (RA) of apes, birds, elephants, monkeys, rodents, and ungulates compare between sites that are less than 5km from a village to sites that are greater than 20km from a village? The variable <code>Distance</code> measures the distance of the transect from the nearest village. Hint: try using the <code>across</code> operator.</strong></p>
 <pre class="r"><code>defauna%&gt;%
   select(transect_id,ra_apes,ra_birds,ra_elephant,ra_monkeys,ra_rodent,ra_ungulate,distance)%&gt;%
   filter(distance&lt;&quot;5&quot;|distance&gt;&quot;20&quot;)%&gt;%
   group_by(distance&lt;&quot;5&quot;&amp;distance&gt;&quot;20&quot;)%&gt;%
   summarise(across(contains(&quot;ra&quot;),mean,na.rm=T))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 2 x 8
-##   `distance &lt; &quot;5&quot;~ transect_id ra_apes ra_birds ra_elephant ra_monkeys ra_rodent
-##   &lt;lgl&gt;                  &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+##   `distance &lt; &quot;5&quot;… transect_id ra_apes ra_birds ra_elephant ra_monkeys ra_rodent
+## * &lt;lgl&gt;                  &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 FALSE                   13.7    1.37     60.8       0.570       29.7      3.37
 ## 2 TRUE                    12.5    5.40     47.8       0.418       39.5      2.81
-## # ... with 1 more variable: ra_ungulate &lt;dbl&gt;</code></pre>
+## # … with 1 more variable: ra_ungulate &lt;dbl&gt;</code></pre>
+<p><em>Please see the key here. The select and filter function you apply here are OK, but the group_by is not.</em></p>
+</div>
 <p><strong>12. (4 points) Based on your interest, do one exploratory analysis on the <code>gabon</code> data of your choice. This analysis needs to include a minimum of two functions in <code>dplyr.</code></strong> I am going to look at how use of land compares to the average diversity of mammals, birds and all species, this time distance being greater then 5km</p>
 <pre class="r"><code>defauna%&gt;%
   select(distance,land_use,diversity_bird_species,diversity_mammal_species,diversity_all_species)%&gt;%
@@ -631,10 +647,9 @@ summarise(avg_age=mean(age,na.rm=T),avg_height=mean(height,na.rm=T))</code></pre
   group_by(land_use)%&gt;%
   summarise(avg_mam_div=mean(diversity_mammal_species,na.rm=T),avg_bird_div=mean(diversity_bird_species,na.rm=T),
             avg_all_div=mean(diversity_all_species,na.rm=T))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 3 x 4
 ##   land_use avg_mam_div avg_bird_div avg_all_div
-##   &lt;chr&gt;          &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;
+## * &lt;chr&gt;          &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;
 ## 1 Logging         1.67         1.54        2.22
 ## 2 Neither         1.71         1.84        2.36
 ## 3 Park            1.75         1.77        2.43</code></pre>
