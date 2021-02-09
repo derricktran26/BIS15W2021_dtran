@@ -1,0 +1,190 @@
+---
+title: "Lab 9 Homework"
+author: "Derrick Tran"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    theme: spacelab
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instructions
+Answer the following questions and complete the exercises in RMarkdown. Please embed all of your code and push your final work to your repository. Your final lab report should be organized, clean, and run free from errors. Remember, you must remove the `#` for the included code chunks to run. Be sure to add your name to the author header above.  
+
+Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!  
+
+## Load the libraries
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(janitor)
+library(here)
+library(naniar)
+``` 
+
+For this homework, we will take a departure from biological data and use data about California colleges. These data are a subset of the national college scorecard (https://collegescorecard.ed.gov/data/). Load the `ca_college_data.csv` as a new object called `colleges`.
+```{r}
+ca_college_data<-readr::read_csv("data/ca_college_data.csv")
+clean_names(ca_college_data)
+```
+
+The variables are a bit hard to decipher, here is a key:  
+
+INSTNM: Institution name  
+CITY: California city  
+STABBR: Location state  
+ZIP: Zip code  
+ADM_RATE: Admission rate  
+SAT_AVG: SAT average score  
+PCIP26: Percentage of degrees awarded in Biological And Biomedical Sciences  
+COSTT4_A: Annual cost of attendance  
+C150_4_POOLED: 4-year completion rate  
+PFTFTUG1_EF: Percentage of undergraduate students who are first-time, full-time degree/certificate-seeking undergraduate students  
+
+1. Use your preferred function(s) to have a look at the data and get an idea of its structure. Make sure you summarize NA's and determine whether or not the data are tidy. You may also consider dealing with any naming issues.
+```{r}
+skimr::skim(ca_college_data)
+```
+so far it looks like theres only NA's and 0's that could be problematic 
+```{r}
+
+```
+
+```{r}
+names(ca_college_data)
+```
+
+2. Which cities in California have the highest number of colleges?
+```{r}
+ca_college_data%>%
+  select(INSTNM,CITY)%>%
+  count(CITY,sort = T)
+```
+
+3. Based on your answer to #2, make a plot that shows the number of colleges in the top 10 cities.
+```{r}
+ca_college_data%>%
+  select(INSTNM,CITY)%>%
+  count(CITY,sort = T)%>%
+  top_n(10)%>%
+  ggplot(aes(y=CITY,x=n))+
+  geom_col()
+  
+  
+```
+
+4. The column `COSTT4_A` is the annual cost of each institution. Which city has the highest average cost? Where is it located?
+```{r}
+ca_college_data%>%
+  select(INSTNM,CITY,COSTT4_A)%>%
+  group_by(CITY)%>%
+  summarise(avg_cost=mean(COSTT4_A,na.rm=T))%>%
+  arrange(desc(avg_cost))%>%
+  top_n(10)
+
+```
+
+5. Based on your answer to #4, make a plot that compares the cost of the individual colleges in the most expensive city. Bonus! Add UC Davis here to see how it compares :>).
+```{r}
+ca_college_data%>%
+  select(INSTNM,CITY,COSTT4_A)%>%
+  filter(CITY=="Claremont"|CITY=="Davis")%>%
+  select(INSTNM,COSTT4_A)%>%
+  ggplot(aes(x=INSTNM, y=COSTT4_A))+
+  geom_col()+
+  coord_flip()
+```
+
+6. The column `ADM_RATE` is the admissions rate by college and `C150_4_POOLED` is the four-year completion rate. Use a scatterplot to show the relationship between these two variables. What do you think this means?
+```{r}
+ca_college_data%>%
+  select(INSTNM,ADM_RATE,C150_4_POOLED)%>%
+  filter(ADM_RATE!="NA")%>%
+  filter(C150_4_POOLED!= "NA")%>%
+  ggplot(aes(x=ADM_RATE,y=C150_4_POOLED))+
+  geom_point()
+  
+```
+
+
+#The higher the admissions rate the lower the graduation rate
+
+
+7. Is there a relationship between cost and four-year completion rate? (You don't need to do the stats, just produce a plot). What do you think this means?
+```{r}
+ca_college_data%>%
+  select(COSTT4_A,C150_4_POOLED)%>%
+  filter(COSTT4_A!="NA")%>%
+  filter(C150_4_POOLED!="NA")%>%
+  ggplot(aes(x=COSTT4_A,y=C150_4_POOLED))+
+  geom_point()
+```
+
+
+#The more expensive the college the more likely you are to graduate
+
+
+8. The column titled `INSTNM` is the institution name. We are only interested in the University of California colleges. Make a new data frame that is restricted to UC institutions. You can remove `Hastings College of Law` and `UC San Francisco` as we are only interested in undergraduate institutions.
+```{r}
+univ_calif_final<-ca_college_data%>%
+  select(INSTNM,COSTT4_A,CITY,C150_4_POOLED,ADM_RATE,PCIP26)%>%
+  filter(grepl("University of California",INSTNM))%>%
+  filter(INSTNM!="University of California-Hastings College of Law")%>%
+  filter(INSTNM!="University of California-San Francisco")
+  
+univ_calif_final  
+```
+
+Remove `Hastings College of Law` and `UC San Francisco` and store the final data frame as a new object `univ_calif_final`.
+```{r}
+
+```
+
+Use `separate()` to separate institution name into two new columns "UNIV" and "CAMPUS".
+```{r}
+univ_calif_separate<-univ_calif_final%>%
+  separate(INSTNM,into = c("UNIV","CAMPUS"),sep = "-")
+```
+
+9. The column `ADM_RATE` is the admissions rate by campus. Which UC has the lowest and highest admissions rates? Produce a numerical summary and an appropriate plot.
+```{r}
+univ_calif_separate%>%
+  select(CAMPUS,ADM_RATE)%>%
+  group_by(CAMPUS)%>%
+  summarise(ADM_RATE)%>%
+  arrange(desc(ADM_RATE))
+```
+
+```{r}
+univ_calif_separate%>%
+  select(CAMPUS,ADM_RATE)%>%
+  group_by(CAMPUS)%>%
+  summarise(ADM_RATE)%>%
+  arrange(desc(ADM_RATE))%>%
+  ggplot(aes(x=CAMPUS, y=ADM_RATE))+
+  geom_col()
+```
+
+10. If you wanted to get a degree in biological or biomedical sciences, which campus confers the majority of these degrees? Produce a numerical summary and an appropriate plot.
+```{r}
+univ_calif_separate%>%
+  select(CAMPUS,PCIP26)%>%
+  group_by(CAMPUS)%>%
+  summarise(PCIP26)%>%
+  arrange(desc(PCIP26))
+```
+
+```{r}
+univ_calif_separate%>%
+  select(CAMPUS,PCIP26)%>%
+  group_by(CAMPUS)%>%
+  summarise(PCIP26)%>%
+  arrange(desc(PCIP26))%>%
+  ggplot(aes(x=CAMPUS, y= PCIP26))+
+  geom_col()
+```
+#Davis, san Diego and Santa Cruz have the best for biosci
+## Knit Your Output and Post to [GitHub](https://github.com/FRS417-DataScienceBiologists)
