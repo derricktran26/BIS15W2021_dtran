@@ -54,6 +54,10 @@ The quotes show the folder structure from the root directory.
 ```{r}
 #sydneybeaches <-read_csv(here("lab8", "data", "sydneybeaches.csv")) %>% janitor::clean_names()
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 2. Are these data "tidy" per the definitions of the tidyverse? How do you know? Are they in wide or long format?
 
@@ -64,6 +68,7 @@ skimr::skim(sydneybeaches)
 summary(sydneybeaches)
 ```
 #in general, after using the clean names function the data looks somewhat tiddy howeverit does look troublesome to extract data from this table. from the Skimr function it doesnt look like theres any weird values in here, usually they would stick out here so this data is tidy enough I think
+</div>
 
 3. We are only interested in the variables site, date, and enterococci_cfu_100ml. Make a new object focused on these variables only. Name the object `sydneybeaches_long`
 ```{r}
@@ -99,7 +104,7 @@ sydneybeaches_wide%>%
 sydneybeaches_dates<-sydneybeaches_long%>%
   separate(date, into=c("day","month","year"), sep = "/")
 
-
+sydneybeaches_dates
 ```
 
 

@@ -1,7 +1,7 @@
 ---
 title: "Lab 8 Homework"
 author: "Derrick Tran"
-date: "2021-02-04"
+date: "2021-02-09"
 output:
   html_document: 
     theme: spacelab
@@ -92,6 +92,10 @@ The quotes show the folder structure from the root directory.
 ```r
 #sydneybeaches <-read_csv(here("lab8", "data", "sydneybeaches.csv")) %>% janitor::clean_names()
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 2. Are these data "tidy" per the definitions of the tidyverse? How do you know? Are they in wide or long format?
 
@@ -128,8 +132,8 @@ Table: Data summary
 
 **Variable type: numeric**
 
-|skim_variable         | n_missing| complete_rate|   mean|     sd|     p0|    p25|    p50|    p75|    p100|hist                                     |
-|:---------------------|---------:|-------------:|------:|------:|------:|------:|------:|------:|-------:|:----------------------------------------|
+|skim_variable         | n_missing| complete_rate|   mean|     sd|     p0|    p25|    p50|    p75|    p100|hist  |
+|:---------------------|---------:|-------------:|------:|------:|------:|------:|------:|------:|-------:|:-----|
 |beach_id              |         0|          1.00|  25.87|   2.08|  22.00|  24.00|  26.00|  27.40|   29.00|▆▃▇▇▆ |
 |longitude             |         0|          1.00| 151.26|   0.01| 151.25| 151.26| 151.26| 151.27|  151.28|▅▇▂▆▂ |
 |latitude              |         0|          1.00| -33.93|   0.03| -33.98| -33.95| -33.92| -33.90|  -33.89|▆▇▁▇▇ |
@@ -158,6 +162,7 @@ summary(sydneybeaches)
 ##                                                      NA's   :29
 ```
 #in general, after using the clean names function the data looks somewhat tiddy howeverit does look troublesome to extract data from this table. from the Skimr function it doesnt look like theres any weird values in here, usually they would stick out here so this data is tidy enough I think
+</div>
 
 3. We are only interested in the variables site, date, and enterococci_cfu_100ml. Make a new object focused on these variables only. Name the object `sydneybeaches_long`
 
@@ -280,6 +285,25 @@ sydneybeaches_wide%>%
 ```r
 sydneybeaches_dates<-sydneybeaches_long%>%
   separate(date, into=c("day","month","year"), sep = "/")
+
+sydneybeaches_dates
+```
+
+```
+## # A tibble: 3,690 x 5
+##    site           day   month year  enterococci_cfu_100ml
+##    <chr>          <chr> <chr> <chr>                 <dbl>
+##  1 Clovelly Beach 02    01    2013                     19
+##  2 Clovelly Beach 06    01    2013                      3
+##  3 Clovelly Beach 12    01    2013                      2
+##  4 Clovelly Beach 18    01    2013                     13
+##  5 Clovelly Beach 30    01    2013                      8
+##  6 Clovelly Beach 05    02    2013                      7
+##  7 Clovelly Beach 11    02    2013                     11
+##  8 Clovelly Beach 23    02    2013                     97
+##  9 Clovelly Beach 07    03    2013                      3
+## 10 Clovelly Beach 25    03    2013                      0
+## # ... with 3,680 more rows
 ```
 
 
@@ -295,7 +319,7 @@ sydneybeaches_dates%>%
 ```
 
 ```
-## `summarise()` regrouping output by 'year' (override with `.groups` argument)
+## `summarise()` has grouped output by 'year'. You can override using the `.groups` argument.
 ```
 
 ```
@@ -330,7 +354,7 @@ sydneybeaches_dates%>%
 ```
 
 ```
-## `summarise()` regrouping output by 'year' (override with `.groups` argument)
+## `summarise()` has grouped output by 'year'. You can override using the `.groups` argument.
 ```
 
 ```
@@ -363,7 +387,7 @@ sydneybeaches_dates%>%
 ```
 
 ```
-## `summarise()` regrouping output by 'year' (override with `.groups` argument)
+## `summarise()` has grouped output by 'year'. You can override using the `.groups` argument.
 ```
 
 ```
@@ -389,7 +413,7 @@ sydneybeaches_dates%>%
 ```
 
 ```
-## `summarise()` regrouping output by 'year' (override with `.groups` argument)
+## `summarise()` has grouped output by 'year'. You can override using the `.groups` argument.
 ```
 
 ```
@@ -421,10 +445,6 @@ sydneybeaches_dates%>%
   group_by(site)%>%
   summarise(avg_entero=mean(enterococci_cfu_100ml,na.rm=T))%>%
   arrange(desc(avg_entero))
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ```

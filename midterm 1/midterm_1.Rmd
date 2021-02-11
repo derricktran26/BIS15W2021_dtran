@@ -12,10 +12,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
-
-```
-
 ## Instructions
 Answer the following questions and complete the exercises in RMarkdown. Please embed all of your code and push your final work to your repository. Your code should be organized, clean, and run free from errors. Be sure to **add your name** to the author header above. You may use any resources to answer these questions (including each other), but you may not post questions to Open Stacks or external help sites. There are 12 total questions.  
 
@@ -31,9 +27,12 @@ library(tidyverse)
 
 ## Questions
 **1. (2 points) Briefly explain how R, RStudio, and GitHub work together to make work flows in data science transparent and repeatable. What is the advantage of using RMarkdown in this context?**  
-so Rstudio is basically a more convenient way to code things into the R console, this way we can use packages and other useful tools to make our work easier. how this works in tandem with github is that your work will be backed up to a repository other then your hard drive, so if someone else needs to look at your work its there and you can look at other peoples work too. It is good to use RMarkdown in this context so we can see your "work" from your code, its so we can see the outputs and dont have to run the code chunks again since you already would've done so
+so Rstudio is basically a more convenient way to code things into the R console, this way we can use packages and other useful tools to make our work easier. how this works in tandem with github is that your work will be backed up to a repository other then your hard drive, so if someone else needs to look at your work its there and you can look at other peoples work too. It is good to use RMarkdown in this context so we can see your "work" from your code, its so we can see the outputs and dont have to run the code chunks again since you already would've done so.  
+
 **2. (2 points) What are the three types of `data structures` that we have discussed? Why are we using data frames for BIS 15L?**
-We are using data frames, data matrices, and vectors. We are using data frames for BIS 15L because it seems a lot more efficient and easier finding and pulling up specific data from files. it is convenient to find and do stuff with the data stored in a data frame. Furthermore, I think most of the files that we would download (data files) seem to have their data stored in a data frame or this is what i have noticed when downloading stuff 
+We are using data frames, data matrices, and vectors. We are using data frames for BIS 15L because it seems a lot more efficient and easier finding and pulling up specific data from files. it is convenient to find and do stuff with the data stored in a data frame. Furthermore, I think most of the files that we would download (data files) seem to have their data stored in a data frame or this is what i have noticed when downloading stuff.  
+
+_In your responses to questions 1 and 2, please make sure that your grammar and punctuation are professional. This is an exam, but also meant to simulate the kind of analysis you would be asked to perform by an employer._
 
 In the midterm 1 folder there is a second folder called `data`. Inside the `data` folder, there is a .csv file called `ElephantsMF`. These data are from Phyllis Lee, Stirling University, and are related to Lee, P., et al. (2013), "Enduring consequences of early experiences: 40-year effects on survival and success among African elephants (Loxodonta africana)," Biology Letters, 9: 20130011. [kaggle](https://www.kaggle.com/mostafaelseidy/elephantsmf).  
 ```{r}
@@ -53,14 +52,20 @@ names(elephants)
 
 ```{r}
 elephants<-rename(elephants, age="Age",height="Height",sex="Sex")
-
-
 ```
 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 ```{r}
 #elephants<-as.factor(elephants$sex)
 data.frame(sex<-as.factor(elephants$sex))
 ```
+_Since the data are already a data frame, you don't need to use the data.frame command. Your first command (line 62) was close but not quite accurate. Please have a look at the key as changing the class of data is important._
+
+</div>
+
 
 **5. (2 points) How many male and female elephants are represented in the data?**
 ```{r}
@@ -68,18 +73,14 @@ elephants%>%
   select(age,height,sex)%>%
   group_by(sex)%>%
   count(sex)
-  
 ```
-
 
 **6. (2 points) What is the average age all elephants in the data?**
 ```{r}
 elephants%>%
   select(age)%>%
   summarise(avg_age=mean(age,na.rm=T))
-  
 ```
-
 
 **7. (2 points) How does the average age and height of elephants compare by sex?**
 ```{r}
@@ -94,11 +95,10 @@ elephants%>%
 elephants%>%
   select(age,height,sex)%>%
   group_by(sex)%>%
-summarise(avg_age=mean(age,na.rm=T),avg_height=mean(height,na.rm=T))
+  summarise(avg_age=mean(age,na.rm=T),
+            avg_height=mean(height,na.rm=T)
+            )
   
-```
-```{r}
-
 ```
 
 **8. (2 points) How does the average height of elephants compare by sex for individuals over 25 years old. Include the min and max height as well as the number of individuals in the sample as part of your analysis.**
@@ -107,10 +107,11 @@ elephants%>%
   select(age,height,sex)%>%
   filter(age>25)%>%
   group_by(sex)%>%
-  summarise(avg_age=mean(age,na.rm=T),avg_height=mean(height,na.rm=T),min_height=min(height),max_height=max(height))
-```
-```{r}
-
+  summarise(avg_age=mean(age,na.rm=T),
+            avg_height=mean(height,na.rm=T),
+            min_height=min(height),
+            max_height=max(height)
+            )
 ```
 
 For the next series of questions, we will use data from a study on vertebrate community composition and impacts from defaunation in [Gabon, Africa](https://en.wikipedia.org/wiki/Gabon). One thing to notice is that the data include 24 separate transects. Each transect represents a path through different forest management areas.  
@@ -120,9 +121,6 @@ Reference: Koerner SE, Poulsen JR, Blanchard EJ, Okouyi J, Clark CJ. Vertebrate 
 **9. (2 points) Load `IvindoData_DryadVersion.csv` and use the function(s) of your choice to get an idea of the overall structure. Change the variables `HuntCat` and `LandUse` to factors.**
 ```{r}
 defauna<- readr::read_csv("IvindoData_DryadVersion.csv", na = c("", "-99", "-"))
-```
-```{r}
-
 ```
 
 **10. (4 points) For the transects with high and moderate hunting intensity, how does the average diversity of birds and mammals compare?**
@@ -142,6 +140,11 @@ defauna%>%
   
 ```
 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
 **11. (4 points) One of the conclusions in the study is that the relative abundance of animals drops off the closer you get to a village. Let's try to reconstruct this (without the statistics). How does the relative abundance (RA) of apes, birds, elephants, monkeys, rodents, and ungulates compare between sites that are less than 5km from a village to sites that are greater than 20km from a village? The variable `Distance` measures the distance of the transect from the nearest village. Hint: try using the `across` operator.**  
 ```{r}
 defauna%>%
@@ -149,9 +152,9 @@ defauna%>%
   filter(distance<"5"|distance>"20")%>%
   group_by(distance<"5"&distance>"20")%>%
   summarise(across(contains("ra"),mean,na.rm=T))
-  
-  
 ```
+_Please see the key here. The select and filter function you apply here are OK, but the group_by is not._
+</div>
 
 **12. (4 points) Based on your interest, do one exploratory analysis on the `gabon` data of your choice. This analysis needs to include a minimum of two functions in `dplyr.`**
 I am going to look at how  use of land compares to the average diversity of mammals, birds and all species, this time distance being greater then 5km
@@ -163,4 +166,3 @@ defauna%>%
   summarise(avg_mam_div=mean(diversity_mammal_species,na.rm=T),avg_bird_div=mean(diversity_bird_species,na.rm=T),
             avg_all_div=mean(diversity_all_species,na.rm=T))
 ```
-
