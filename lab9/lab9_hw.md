@@ -1,7 +1,7 @@
 ---
 title: "Lab 9 Homework"
 author: "Derrick Tran"
-date: "2021-02-09"
+date: "2021-02-14"
 output:
   html_document: 
     theme: spacelab
@@ -115,8 +115,8 @@ Table: Data summary
 
 **Variable type: numeric**
 
-|skim_variable | n_missing| complete_rate|     mean|       sd|      p0|      p25|      p50|      p75|     p100|hist                                     |
-|:-------------|---------:|-------------:|--------:|--------:|-------:|--------:|--------:|--------:|--------:|:----------------------------------------|
+|skim_variable | n_missing| complete_rate|     mean|       sd|      p0|      p25|      p50|      p75|     p100|hist  |
+|:-------------|---------:|-------------:|--------:|--------:|-------:|--------:|--------:|--------:|--------:|:-----|
 |ADM_RATE      |       240|          0.30|     0.59|     0.23|    0.08|     0.46|     0.64|     0.75|     1.00|▂▃▆▇▃ |
 |SAT_AVG       |       276|          0.19|  1112.31|   170.80|  870.00|   985.00|  1078.00|  1237.00|  1555.00|▇▇▅▂▂ |
 |PCIP26        |        35|          0.90|     0.02|     0.04|    0.00|     0.00|     0.00|     0.02|     0.22|▇▁▁▁▁ |
@@ -188,10 +188,6 @@ ca_college_data%>%
   summarise(avg_cost=mean(COSTT4_A,na.rm=T))%>%
   arrange(desc(avg_cost))%>%
   top_n(10)
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ```
@@ -313,10 +309,6 @@ univ_calif_separate%>%
 ```
 
 ```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
-```
 ## # A tibble: 8 x 2
 ##   CAMPUS        ADM_RATE
 ##   <chr>            <dbl>
@@ -341,10 +333,6 @@ univ_calif_separate%>%
   geom_col()
 ```
 
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
 ![](lab9_hw_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
 10. If you wanted to get a degree in biological or biomedical sciences, which campus confers the majority of these degrees? Produce a numerical summary and an appropriate plot.
@@ -355,10 +343,6 @@ univ_calif_separate%>%
   group_by(CAMPUS)%>%
   summarise(PCIP26)%>%
   arrange(desc(PCIP26))
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ```
@@ -384,10 +368,6 @@ univ_calif_separate%>%
   arrange(desc(PCIP26))%>%
   ggplot(aes(x=CAMPUS, y= PCIP26))+
   geom_col()
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ![](lab9_hw_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
