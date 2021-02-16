@@ -1,0 +1,318 @@
+---
+title: "Lab 11 Homework"
+author: "Derrick Tran"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    theme: spacelab
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instructions
+Answer the following questions and complete the exercises in RMarkdown. Please embed all of your code and push your final work to your repository. Your final lab report should be organized, clean, and run free from errors. Remember, you must remove the `#` for the included code chunks to run. Be sure to add your name to the author header above. For any included plots, make sure they are clearly labeled. You are free to use any plot type that you feel best communicates the results of your analysis.  
+
+**In this homework, you should make use of the aesthetics you have learned. It's OK to be flashy!**
+
+Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!  
+
+## Load the libraries
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(janitor)
+library(here)
+library(naniar)
+library(RColorBrewer)
+library(paletteer)
+``` 
+
+## Resources
+The idea for this assignment came from [Rebecca Barter's](http://www.rebeccabarter.com/blog/2017-11-17-ggplot2_tutorial/) ggplot tutorial so if you get stuck this is a good place to have a look.  
+
+## Gapminder
+For this assignment, we are going to use the dataset [gapminder](https://cran.r-project.org/web/packages/gapminder/index.html). Gapminder includes information about economics, population, and life expectancy from countries all over the world. You will need to install it before use. This is the same data that we will use for midterm 2 so this is good practice.
+```{r}
+
+library("gapminder")
+```
+```{r}
+glimpse(gapminder)
+#i wanna change year to be a factor i remember that being important in class
+```
+```{r}
+summary(gapminder)
+```
+```{r}
+clean_names(gapminder)
+structure(gapminder)
+```
+
+## Questions
+The questions below are open-ended and have many possible solutions. Your approach should, where appropriate, include numerical summaries and visuals. Be creative; assume you are building an analysis that you would ultimately present to an audience of stakeholders. Feel free to try out different `geoms` if they more clearly present your results.  
+
+**1. Use the function(s) of your choice to get an idea of the overall structure of the data frame, including its dimensions, column names, variable classes, etc. As part of this, determine how NA's are treated in the data.**  
+```{r}
+names(gapminder)
+```
+```{r}
+summary(gapminder)
+```
+```{r}
+gapminder%>%
+  count("NA")
+```
+```{r}
+#so im looking at the data it looks fine to work with, I think i'll just filter out NA's and see what happens first
+  
+```
+
+```{r}
+gapminder_working<-gapminder%>%
+  filter(gapminder!="NA")
+gapminder_working
+```
+
+**2. Among the interesting variables in gapminder is life expectancy. How has global life expectancy changed between 1952 and 2007?**
+```{r}
+names(gapminder_working)
+```
+
+
+```{r}
+gapminder_working%>%
+  group_by(year)%>%
+  summarise(avg_life=mean(lifeExp,na.rm=T))
+```
+```{r}
+gapminder_working%>%
+  filter(year>=1952|year<=2007)%>%
+  group_by(year)%>%
+  summarise(avg_life=mean(lifeExp,na.rm=T))%>%
+  ggplot(aes(x=year,y=avg_life))+
+  geom_point()
+```
+```{r}
+gapminder_working%>%
+  filter(year>=1952|year<=2007)%>%
+  group_by(year)%>%
+  summarise(avg_life=mean(lifeExp,na.rm=T))%>%
+  ggplot(aes(x=year,y=avg_life))+
+  geom_col(alpha=0.6,color="black",fill="wheat2")+
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 60, hjust=1))+
+  labs(title = "Life Expectancy Over Time",
+       x = "Year",
+       y= "Life Expectancy",
+       fill= "country")
+```
+
+**3. How do the distributions of life expectancy compare for the years 1952 and 2007?**
+```{r}
+gapminder_working%>%
+  filter(year==1952|year==2007)%>%
+  ggplot(aes(x=year,y=lifeExp))+
+  geom_col(alpha=0.6,color="black",fill="wheat2")+
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 60, hjust=1))+
+  labs(title = "Life Expectancy Over Time",
+       x = "Year",
+       y= "Life Expectancy")
+```
+
+**4. Your answer above doesn't tell the whole story since life expectancy varies by region. Make a summary that shows the min, mean, and max life expectancy by continent for all years represented in the data.**
+
+```{r}
+summary(gapminder)
+```
+```{r}
+library(gtools)
+quartiles<- quantcut(gapminder_working$lifeExp)
+table(quartiles)
+
+```
+
+
+```{r}
+gapminder_working%>%
+  group_by(continent)%>%
+  summarise(min_exp=min(lifeExp),max_exp=max(lifeExp),avg_life=mean(lifeExp))
+```
+```{r}
+gapminder_working%>%
+  group_by(continent)%>%
+  summarise(min_exp=min(lifeExp),max_exp=max(lifeExp),avg_life=mean(lifeExp))%>%
+  ggplot(aes(x=continent,fill=avg_life,y=max_exp))+
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 60, hjust=1))+
+  labs(title = "Summary of life expectancy per continent",
+       x = "Continent",
+       y= "Max Life Expectancy")
+```
+
+
+```{r}
+gapminder_working%>%
+  group_by(continent)%>%
+  summarise(min_exp=min(lifeExp),max_exp=max(lifeExp),avg_life=mean(lifeExp))%>%
+  ggplot(aes(x=continent,fill=max_exp,y=avg_life))+
+  geom_col( color = "black")+theme(axis.text.x = element_text(angle = 60, hjust=1))+
+  labs(title = "Summary of life expectancy per continent",
+       x = "Continent",
+       y= "Average Life Expectancy")
+  
+  
+```
+
+
+```{r}
+my_palette <- paletteer_d("ggsci::hallmarks_light_cosmic")
+
+```
+
+
+```{r}
+
+```
+
+**5. How has life expectancy changed between 1952-2007 for each continent?**
+```{r}
+gapminder_working%>%
+  filter(year>=1952|year<=2007)%>%
+  group_by(year,continent,lifeExp)%>%
+  summarise(avg_life_exp=mean(lifeExp,na.rm=T))%>%
+  ggplot(aes(x=year,fill=continent,y=avg_life_exp))+
+  geom_col(position = "dodge")
+```
+
+**6. We are interested in the relationship between per capita GDP and life expectancy; i.e. does having more money help you live longer?**
+```{r}
+gapminder_working%>%
+  group_by(continent,lifeExp)%>%
+  summarise(avg_gdp=mean(mean(gdpPercap,na.rm=T)),avg_life_exp=mean(lifeExp,na.rm=T))%>%
+  ggplot(aes(x=avg_life_exp,y=avg_gdp))+
+  geom_point()
+```
+
+**7. Which countries have had the largest population growth since 1952?**
+
+```{r}
+gapminder_working%>%
+  filter(year==1952|year==2007)%>%
+  select(country,pop,year)%>%
+  group_by(country)%>%
+  mutate(growth=pop-lag(pop,default = pop[1]))%>%
+  filter(year==2007)%>%
+  summarise(country,growth)%>%
+  arrange(desc(growth))
+```
+
+```{r}
+gapminder_working%>%
+  filter(year==1952|year==2007)%>%
+  select(country,pop,year)%>%
+  group_by(country)%>%
+  mutate(growth=pop-lag(pop,default = pop[1]))%>%
+  filter(year==2007)%>%
+  summarise(country,growth)%>%
+  top_n(5)%>%
+  arrange(desc(growth))
+  
+```
+
+```{r}
+
+```
+
+
+**8. Use your results from the question above to plot population growth for the top five countries since 1952.**
+```{r}
+gapminder_working%>%
+  filter(year==1952|year==2007)%>%
+  select(country,pop,year)%>%
+  group_by(country)%>%
+  mutate(growth=pop-lag(pop,default = pop[1]))%>%
+  filter(year==2007)%>%
+  summarise(country,growth)%>%
+  top_n(5)%>%
+  ggplot(aes(x=country,y=growth))+
+  geom_col()
+```
+```{r}
+gapminder_working%>%
+  filter(year==1952|year==2007)%>%
+  select(country,pop,year)%>%
+  group_by(country)%>%
+  mutate(growth=pop-lag(pop,default = pop[1]))%>%
+  filter(year==2007)%>%
+  summarise(country,growth)%>%
+  top_n(5)%>%
+  ggplot(aes(x=country,y=growth))+
+  geom_point()
+```
+
+**9. How does per-capita GDP growth compare between these same five countries?**
+```{r}
+gapminder_working%>%
+  filter(year==1952|year==2007)%>%
+  select(country,pop,year,gdpPercap)%>%
+  group_by(country)%>%
+  mutate(growth_gdp=gdpPercap-lag(gdpPercap,default = 0))%>%
+  filter(year==2007)%>%
+  summarise(country,growth_gdp)%>%
+  top_n(5)%>%
+  arrange(desc(growth_gdp))
+```
+```{r}
+gapminder_working%>%
+  filter(year==1952|year==2007)%>%
+  select(country,pop,year,gdpPercap)%>%
+  group_by(country)%>%
+  mutate(growth_gdp=gdpPercap-lag(gdpPercap,default = gdpPercap[1]))%>%
+  summarise(country,growth_gdp)%>%
+  arrange(desc(growth_gdp))
+  
+```
+```{r}
+gapminder_working%>%
+  filter(year==1952|year==2007)%>%
+  select(country,pop,year,gdpPercap)%>%
+  group_by(country)%>%
+  mutate(growth_gdp=gdpPercap-lag(gdpPercap,default = gdpPercap[1]))%>%
+  summarise(country,growth_gdp)%>%
+  arrange(desc(growth_gdp))%>%
+  top_n(5)
+  
+```
+
+
+**10. Make one plot of your choice that uses faceting!**
+```{r}
+pp2<-gapminder_working%>%
+  ggplot(aes(x=lifeExp))+
+  geom_density()
+```
+
+```{r}
+pp2
+```
+
+```{r}
+pp2+facet_wrap(~continent)
+```
+```{r}
+pp3<-gapminder_working%>%
+  ggplot(aes(x=pop))+
+  geom_density()
+
+pp3
+```
+```{r}
+pp3+facet_wrap(~continent)
+```
+
+
+## Push your final code to GitHub!
+Please be sure that you check the `keep md` file in the knit preferences. 
