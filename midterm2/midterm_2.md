@@ -1,7 +1,7 @@
 ---
 title: "Midterm 2"
 author: "Derrick Tran"
-date: "2021-02-22"
+date: "2021-02-23"
 output:
   html_document: 
     theme: spacelab
@@ -609,6 +609,10 @@ life_expectancy_longer%>%
 ## # ... with 18,877 more rows
 ```
 
+
+#the highest is singapore and the lowest is Kazahkstan
+
+
 4. (3 points) Although we can see which country has the highest life expectancy for the past 100 years, we don't know which countries have changed the most. What are the top 5 countries that have experienced the biggest improvement in life expectancy between 1920-2020?
 
 ```r
@@ -825,6 +829,10 @@ population_longer%>%
 ![](midterm_2_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
 
 
+
+
+
+
 ```r
 population_longer%>%
   filter(year==1920|year==2020)%>%
@@ -942,6 +950,7 @@ income_longer%>%
 ## # ... with 376 more rows
 ```
 
+
 ```r
 income_longer%>%
   filter(year==1920|year==2020)%>%
@@ -972,6 +981,7 @@ income_longer%>%
 ## 10 San Marino                   54620
 ## # ... with 376 more rows
 ```
+
 
 ```r
 income_longer%>%
@@ -1132,13 +1142,31 @@ gapminder_join%>%
   ggplot(aes(x=year,y=life_expectancy,group=country,color=country))+
   geom_line()+
    theme(axis.text.x = element_text(angle = 70, hjust=1)) +
-  labs(title = "Asian Countries involved in WWII and Cold War Over the Decades",
+  labs(title = "Countries involved in WWII and Cold War in the East Over the Decades",
        x = "Year",
        y = "Life Expectancy",
        fill = "Country")
 ```
 
 ![](midterm_2_files/figure-html/unnamed-chunk-41-1.png)<!-- -->
+
+
+
+
+```r
+gapminder_join%>%
+  filter(country=="Vietnam"|country=="Japan"|country=="South Korea"|country=="United States"|country=="Russia"|country=="China")%>%
+  filter(year==1920|year==1930|year==1940|year==1945|year==1950|year==1960|year==1970|year==1980|year==1980|year==1990|year==2000|year==2010|year==2020)%>%
+  ggplot(aes(x=life_expectancy,y=Pop,group=country,color=country))+
+  geom_line()+
+   theme(axis.text.x = element_text(angle = 70, hjust=1)) +
+  labs(title = "Life Epectancy Versus Population from 1920-2020",
+       x = "Life Expectancy",
+       y = "Population",
+       fill = "Country")
+```
+
+![](midterm_2_files/figure-html/unnamed-chunk-42-1.png)<!-- -->
 
 
 
@@ -1151,9 +1179,22 @@ plo_2<-gapminder_join%>%
 ```
 
 
+
+```r
+gapminder_join%>%
+  filter(country=="Vietnam"|country=="Japan"|country=="South Korea"|country=="United States")%>%
+  filter(year==1920|year==1930|year==1940|year==1945|year==1950|year==1960|year==1970|year==1980|year==1980|year==1990|year==2000|year==2010|year==2020)%>%
+  ggplot(aes(x=life_expectancy))+
+  geom_density()
+```
+
+![](midterm_2_files/figure-html/unnamed-chunk-44-1.png)<!-- -->
+
+
+
 ```r
 plo_2+facet_grid(~country)
 ```
 
-![](midterm_2_files/figure-html/unnamed-chunk-43-1.png)<!-- -->
+![](midterm_2_files/figure-html/unnamed-chunk-45-1.png)<!-- -->
 #I could not get anything useful out of facets for this particular problem, I'm just including it for the sake of completeness

@@ -138,6 +138,10 @@ life_expectancy_longer%>%
   arrange(desc(-life_expectancy))
 ```
 
+
+#the highest is singapore and the lowest is Kazahkstan
+
+
 4. (3 points) Although we can see which country has the highest life expectancy for the past 100 years, we don't know which countries have changed the most. What are the top 5 countries that have experienced the biggest improvement in life expectancy between 1920-2020?
 ```{r}
 life_expectancy_longer%>%
@@ -229,6 +233,10 @@ population_longer%>%
        fill = "Country")
 ```
 
+
+
+
+
 ```{r}
 population_longer%>%
   filter(year==1920|year==2020)%>%
@@ -274,6 +282,7 @@ income_longer%>%
   summarise(country,year,income,growth_income)
   
 ```
+
 ```{r}
 income_longer%>%
   filter(year==1920|year==2020)%>%
@@ -282,6 +291,7 @@ income_longer%>%
   summarise(country,growth_income)%>%
   arrange(desc(growth_income))
 ```
+
 ```{r}
 income_longer%>%
   filter(year==1920|year==2020)%>%
@@ -374,9 +384,24 @@ gapminder_join%>%
   ggplot(aes(x=year,y=life_expectancy,group=country,color=country))+
   geom_line()+
    theme(axis.text.x = element_text(angle = 70, hjust=1)) +
-  labs(title = "Asian Countries involved in WWII and Cold War Over the Decades",
+  labs(title = "Countries involved in WWII and Cold War in the East Over the Decades",
        x = "Year",
        y = "Life Expectancy",
+       fill = "Country")
+```
+
+
+
+```{r}
+gapminder_join%>%
+  filter(country=="Vietnam"|country=="Japan"|country=="South Korea"|country=="United States"|country=="Russia"|country=="China")%>%
+  filter(year==1920|year==1930|year==1940|year==1945|year==1950|year==1960|year==1970|year==1980|year==1980|year==1990|year==2000|year==2010|year==2020)%>%
+  ggplot(aes(x=life_expectancy,y=Pop,group=country,color=country))+
+  geom_line()+
+   theme(axis.text.x = element_text(angle = 70, hjust=1)) +
+  labs(title = "Life Epectancy Versus Population from 1920-2020",
+       x = "Life Expectancy",
+       y = "Population",
        fill = "Country")
 ```
 
@@ -388,6 +413,16 @@ plo_2<-gapminder_join%>%
   ggplot(aes(x=life_expectancy))+
   geom_density()
 ```
+
+
+```{r}
+gapminder_join%>%
+  filter(country=="Vietnam"|country=="Japan"|country=="South Korea"|country=="United States")%>%
+  filter(year==1920|year==1930|year==1940|year==1945|year==1950|year==1960|year==1970|year==1980|year==1980|year==1990|year==2000|year==2010|year==2020)%>%
+  ggplot(aes(x=life_expectancy))+
+  geom_density()
+```
+
 
 ```{r}
 plo_2+facet_grid(~country)
