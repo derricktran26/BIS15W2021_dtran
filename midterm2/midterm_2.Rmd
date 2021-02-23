@@ -1,0 +1,395 @@
+---
+title: "Midterm 2"
+author: "Derrick Tran"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    theme: spacelab
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instructions
+Answer the following questions and complete the exercises in RMarkdown. Please embed all of your code and push your final work to your repository. Your code should be organized, clean, and run free from errors. Be sure to **add your name** to the author header above. You may use any resources to answer these questions (including each other), but you may not post questions to Open Stacks or external help sites. There are 10 total questions.  
+
+Make sure to use the formatting conventions of RMarkdown to make your report neat and clean! Your plots should use consistent aesthetics throughout. Feel free to be creative- there are many possible solutions to these questions!  
+
+This exam is due by **12:00p on Tuesday, February 23**.  
+
+## Load the libraries
+```{r}
+library(tidyverse)
+library(janitor)
+library(here)
+library(RColorBrewer)
+library(paletteer)
+options(scipen=999) #disables scientific notation when printing
+```
+
+## Gapminder
+For this assignment, we are going to use data from  [gapminder](https://www.gapminder.org/). Gapminder includes information about economics, population, social issues, and life expectancy from countries all over the world. We will use three data sets, so please load all three.  
+
+One thing to note is that the data include years beyond 2021. These are projections based on modeling done by the gapminder organization. Start by importing the data.
+```{r}
+population <- read_csv("data/population_total.csv")
+population
+```
+
+```{r}
+income <- read_csv("data/income_per_person_gdppercapita_ppp_inflation_adjusted.csv")
+income
+```
+
+```{r}
+life_expectancy <- read_csv("data/life_expectancy_years.csv")
+life_expectancy
+```
+
+1. (3 points) Once you have an idea of the structure of the data, please make each data set tidy and store them as new objects. You will need both the original and tidy data!
+```{r}
+structure(income)
+```
+
+```{r}
+structure(life_expectancy)
+```
+
+```{r}
+
+structure(population)
+```
+
+
+```{r}
+income_longer<-income%>%
+  pivot_longer(-country,
+               names_to = "year",
+               values_to = "income")
+income_longer
+```
+
+```{r}
+life_expectancy_longer<-life_expectancy%>%
+  pivot_longer(-country,
+               names_to = "year", 
+               values_to = "life_expectancy")
+life_expectancy_longer
+```
+
+```{r}
+population_longer<-population%>%
+  pivot_longer(-country,
+               names_to = "year",
+               values_to = "Pop")
+
+population_longer
+```
+
+
+
+2. (1 point) How many different countries are represented in the data? Provide the total number and their names. Since each data set includes different numbers of countries, you will need to do this for each one.
+```{r}
+nrow(income)
+#i think this is more efficient way to count the countries, because the dataset is written in a way that does not have repeats already, so I know that the number of rows should be the same as the number of countries. I will show that there isnt any repeats i belive
+```
+
+```{r}
+income%>%
+  count(country)%>%
+  arrange(desc(n))
+#here im not using the tidy data because there are a huge increase in entries, and this is just to check if there are repeated countries
+```
+
+```{r}
+nrow(population)
+```
+```{r}
+population%>%
+  count(country)%>%
+  arrange(desc(n))
+```
+```{r}
+nrow(life_expectancy)
+```
+```{r}
+life_expectancy%>%
+  count(country)%>%
+  arrange(desc(n))
+```
+
+## Life Expectancy  
+
+3. (2 points) Let's limit the data to the past 100 years (1920-2020). For these years, which country has the highest life expectancy? How about the lowest life expectancy?  
+
+Highest
+```{r}
+life_expectancy_longer%>%
+  filter(year>=1920 & year<=2020)%>%
+  arrange(desc(life_expectancy))
+```
+
+Lowest
+```{r}
+life_expectancy_longer%>%
+  filter(year>=1920 & year<=2020)%>%
+  arrange(desc(-life_expectancy))
+```
+
+4. (3 points) Although we can see which country has the highest life expectancy for the past 100 years, we don't know which countries have changed the most. What are the top 5 countries that have experienced the biggest improvement in life expectancy between 1920-2020?
+```{r}
+life_expectancy_longer%>%
+ filter(year=='1920'|year=='2020')%>%
+  group_by(country)%>%
+  mutate(growth_life=life_expectancy-lag(life_expectancy,default = life_expectancy[1]))
+```
+
+```{r}
+life_expectancy_longer%>%
+ filter(year=='1920'|year=='2020')%>%
+  group_by(country)%>%
+  mutate(growth_life=life_expectancy-lag(life_expectancy,default = life_expectancy[1]))%>%
+  arrange(desc(growth_life))%>%
+  head(5)
+
+  
+```
+
+5. (3 points) Make a plot that shows the change over the past 100 years for the country with the biggest improvement in life expectancy. Be sure to add appropriate aesthetics to make the plot clean and clear. Once you have made the plot, do a little internet searching and see if you can discover what historical event may have contributed to this remarkable change.  
+
+```{r}
+life_expectancy_longer%>%
+  filter(country=="Kuwait")%>%
+  filter(year>=1920&year<=2020)
+```
+```{r}
+life_expectancy_longer%>%
+  filter(country=="Kuwait")%>%
+  filter(year>=1920&year<=2020)%>%
+  ggplot(aes(x=year,y=life_expectancy))+
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+#im not going to use this as is, im going to pull specific dates they should look similar anyways
+```
+```{r}
+life_expectancy_longer%>%
+  filter(country=="Kuwait")%>%
+  filter(year==1920|year==1930|year==1940|year==1945|year==1950|year==1960|year==1970|year==1980|year==1980|year==1990|year==2000|year==2010|year==2020)%>%
+  ggplot(aes(x=year,y=life_expectancy))+
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 70, hjust=1)) +
+  labs(title = "Life Expectancy of Kuwait Over the Years",
+       x = "Year",
+       y = "Life Expectancy",
+       fill = "Country")
+
+#according to wikipedia the large increase in life expectancy occurred around the time Kuwait became a major exporter of oil in that time period, which had led to an era of prosperity which had raised the standard of living to be on par with a modernizing world
+```
+
+## Population Growth
+6. (3 points) Which 5 countries have had the highest population growth over the past 100 years (1920-2020)?
+```{r}
+population_longer%>%
+  filter(year==1920|year==2020)%>%
+  group_by(country)%>%
+  mutate(growth_pop=Pop-lag(Pop,default = Pop[1]))
+  
+```
+```{r}
+population_longer%>%
+  filter(year==1920|year==2020)%>%
+  group_by(country)%>%
+  mutate(growth_pop=Pop-lag(Pop,default = Pop[1]))%>%
+  summarise(country,growth_pop)%>%
+  arrange(desc(growth_pop))
+```
+```{r}
+population_longer%>%
+  filter(year==1920|year==2020)%>%
+  group_by(country)%>%
+  mutate(growth_pop=Pop-lag(Pop,default = Pop[1]))%>%
+  summarise(country,growth_pop)%>%
+  arrange(desc(growth_pop))%>%
+  head(5)
+```
+
+```{r}
+population_longer%>%
+  group_by(country)%>%
+  filter(country=="India"|country=="China"|country=="Indonesia"|country=="United States"|country=="Pakistan")%>%
+  filter(year==1920|year==1930|year==1940|year==1945|year==1950|year==1960|year==1970|year==1980|year==1980|year==1990|year==2000|year==2010|year==2020)%>%
+  ggplot(aes(x=year,y=Pop,group=country,color=country))+
+  geom_line(shape=0)+
+  theme(axis.text.x = element_text(angle = 70, hjust=1)) +
+  labs(title = "5 Countries With the Highest Population Growth, Pop Over the Decades",
+       x = "Year",
+       y = "Population Count",
+       fill = "Country")
+```
+
+```{r}
+population_longer%>%
+  filter(year==1920|year==2020)%>%
+  group_by(country)%>%
+  mutate(growth_pop=Pop-lag(Pop,default = Pop[1]))%>%
+  summarise(country,year,Pop,growth_pop)%>%
+  filter(country=="India"|country=="China"|country=="Indonesia"|country=="United States"|country=="Pakistan")
+```
+
+
+7. (4 points) Produce a plot that shows the 5 countries that have had the highest population growth over the past 100 years (1920-2020). Which countries appear to have had exponential growth?  
+```{r}
+population_longer%>%
+  filter(year==1920|year==2020)%>%
+  group_by(country)%>%
+  mutate(growth_pop=Pop-lag(Pop,default = Pop[1]))%>%
+  summarise(country,year,Pop,growth_pop)%>%
+  filter(country=="India"|country=="China"|country=="Indonesia"|country=="United States"|country=="Pakistan")
+```
+```{r}
+population_longer%>%
+  filter(year==1920|year==2020)%>%
+  group_by(country)%>%
+  mutate(growth_pop=Pop-lag(Pop,default = Pop[1]))%>%
+  summarise(country,year,Pop,growth_pop)%>%
+  filter(country=="India"|country=="China"|country=="Indonesia"|country=="United States"|country=="Pakistan")%>%
+  ggplot(aes(x=year,fill=country,y=Pop))+
+  geom_col(position = "dodge")
+  
+```
+
+
+
+## Income
+The units used for income are gross domestic product per person adjusted for differences in purchasing power in international dollars.
+
+8. (4 points) As in the previous questions, which countries have experienced the biggest growth in per person GDP. Show this as a table and then plot the changes for the top 5 countries. With a bit of research, you should be able to explain the dramatic downturns of the wealthiest economies that occurred during the 1980's.
+```{r}
+income_longer%>%
+  filter(year==1920|year==2020)%>%
+  group_by(country)%>%
+  mutate(growth_income=income-lag(income,default = income[1]))%>%
+  summarise(country,year,income,growth_income)
+  
+```
+```{r}
+income_longer%>%
+  filter(year==1920|year==2020)%>%
+  group_by(country)%>%
+  mutate(growth_income=income-lag(income,default = income[1]))%>%
+  summarise(country,growth_income)%>%
+  arrange(desc(growth_income))
+```
+```{r}
+income_longer%>%
+  filter(year==1920|year==2020)%>%
+  group_by(country)%>%
+  mutate(growth_income=income-lag(income,default = income[1]))%>%
+  summarise(country,growth_income)%>%
+  arrange(desc(growth_income))%>%
+  head(5)
+
+#brunei makes a lot of its money on oil and natural gass
+#Qutar also makes most of its money in oil and natural gas
+#Luxembourg used to be big on steel and chemical products but shifted to finance and banking, attracting a lot of foreign countries and accounts being a major tax haven
+#Singapore makes its money in banking, financial services, and oil refining. Is also a tax haven
+#Ireland focused on tech and finance but had issues with recessions during the housing bubble in 2008
+```
+
+```{r}
+income_longer%>%
+  filter(year==1920|year==2020)%>%
+  group_by(country)%>%
+  mutate(growth_income=income-lag(income,default = income[1]))%>%
+  summarise(country,year,growth_income,income)%>%
+  filter(country=="Qatar"|country=="Luxembourg"|country=="Singapore"|country=="Brunei"|country=="Ireland")%>%
+  ggplot(aes(x=year,fill=country,y=income))+
+  geom_col(position = "dodge")
+```
+
+```{r}
+income_longer%>%
+  group_by(country)%>%
+  filter(country=="Qatar"|country=="Luxembourg"|country=="Singapore"|country=="Brunei"|country=="Ireland")%>%
+  filter(year==1920|year==1930|year==1940|year==1945|year==1950|year==1960|year==1970|year==1980|year==1980|year==1990|year==2000|year==2010|year==2020)%>%
+  ggplot(aes(x=year,y=income,group=country,color=country))+
+  geom_line()+
+  theme(axis.text.x = element_text(angle = 70, hjust=1)) +
+  labs(title = "5 Countries With the Highest Income Growth, Income Over the Decades",
+       x = "Year",
+       y = "Income",
+       fill = "Country")
+  
+```
+
+
+#random assumption, I want to hypothesize that the decline in 1990's in Bruneis economy my also correlate with the rise of the other nations shown
+
+9. (3 points) Create three new objects that restrict each data set (life expectancy, population, income) to the years 1920-2020. Hint: I suggest doing this with the long form of your data. Once this is done, merge all three data sets using the code I provide below. You may need to adjust the code depending on how you have named your objects. I called mine `life_expectancy_100`, `population_100`, and `income_100`. For some of you, learning these `joins` will be important for your project.  
+
+life_expectancy_100
+```{r}
+life_expectancy_100<-life_expectancy_longer%>%
+  filter(year>=1920|year<=2020)
+```
+
+population_100
+```{r}
+population_100<-population_longer%>%
+  filter(year>=1920|year<=2020)
+```
+
+income_100
+```{r}
+income_100<-income_longer%>%
+  filter(year>=1920|year<=2020)
+```
+
+```{r}
+gapminder_join <- inner_join(life_expectancy_100, population_100, by= c("country", "year"))
+gapminder_join <- inner_join(gapminder_join, income_100, by= c("country", "year"))
+gapminder_join
+```
+
+10. (4 points) Use the joined data to perform an analysis of your choice. The analysis should include a comparison between two or more of the variables `life_expectancy`, `population`, or `income.`
+```{r}
+#what is the relationship between life expectancy and income for the country of vietnam? 
+
+gapminder_join%>%
+  filter(country=="Vietnam")%>%
+  filter(year==1920|year==1930|year==1940|year==1945|year==1950|year==1960|year==1970|year==1980|year==1980|year==1990|year==2000|year==2010|year==2020)
+
+```
+
+
+
+
+
+```{r}
+gapminder_join%>%
+  filter(country=="Vietnam"|country=="Japan"|country=="South Korea"|country=="United States"|country=="Russia"|country=="China")%>%
+  filter(year==1920|year==1930|year==1940|year==1945|year==1950|year==1960|year==1970|year==1980|year==1980|year==1990|year==2000|year==2010|year==2020)%>%
+  ggplot(aes(x=year,y=life_expectancy,group=country,color=country))+
+  geom_line()+
+   theme(axis.text.x = element_text(angle = 70, hjust=1)) +
+  labs(title = "Asian Countries involved in WWII and Cold War Over the Decades",
+       x = "Year",
+       y = "Life Expectancy",
+       fill = "Country")
+```
+
+
+```{r}
+plo_2<-gapminder_join%>%
+  filter(country=="Vietnam"|country=="Japan"|country=="South Korea"|country=="United States")%>%
+  filter(year==1920|year==1930|year==1940|year==1945|year==1950|year==1960|year==1970|year==1980|year==1980|year==1990|year==2000|year==2010|year==2020)%>%
+  ggplot(aes(x=life_expectancy))+
+  geom_density()
+```
+
+```{r}
+plo_2+facet_grid(~country)
+```
+#I could not get anything useful out of facets for this particular problem, I'm just including it for the sake of completeness
