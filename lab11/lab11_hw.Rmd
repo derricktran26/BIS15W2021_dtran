@@ -108,6 +108,10 @@ gapminder_working%>%
        y= "Life Expectancy",
        fill= "country")
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 **3. How do the distributions of life expectancy compare for the years 1952 and 2007?**
 ```{r}
@@ -121,6 +125,7 @@ gapminder_working%>%
        x = "Year",
        y= "Life Expectancy")
 ```
+</div>
 
 **4. Your answer above doesn't tell the whole story since life expectancy varies by region. Make a summary that shows the min, mean, and max life expectancy by continent for all years represented in the data.**
 
@@ -252,6 +257,10 @@ gapminder_working%>%
   ggplot(aes(x=country,y=growth))+
   geom_point()
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 **9. How does per-capita GDP growth compare between these same five countries?**
 ```{r}
@@ -286,6 +295,8 @@ gapminder_working%>%
   top_n(5)
   
 ```
+
+</div>
 
 
 **10. Make one plot of your choice that uses faceting!**

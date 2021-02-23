@@ -1,7 +1,7 @@
 ---
 title: "Lab 11 Homework"
 author: "Derrick Tran"
-date: "2021-02-15"
+date: "2021-02-18"
 output:
   html_document: 
     theme: spacelab
@@ -166,7 +166,7 @@ gapminder%>%
 ```
 ## # A tibble: 1 x 2
 ##   `"NA"`     n
-##   <chr>  <int>
+## * <chr>  <int>
 ## 1 NA      1704
 ```
 
@@ -217,13 +217,9 @@ gapminder_working%>%
 ```
 
 ```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
-```
 ## # A tibble: 12 x 2
 ##     year avg_life
-##    <int>    <dbl>
+##  * <int>    <dbl>
 ##  1  1952     49.1
 ##  2  1957     51.5
 ##  3  1962     53.6
@@ -247,10 +243,6 @@ gapminder_working%>%
   geom_point()
 ```
 
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
 ![](lab11_hw_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
 ```r
@@ -268,11 +260,11 @@ gapminder_working%>%
        fill= "country")
 ```
 
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
 ![](lab11_hw_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 **3. How do the distributions of life expectancy compare for the years 1952 and 2007?**
 
@@ -289,6 +281,7 @@ gapminder_working%>%
 ```
 
 ![](lab11_hw_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+</div>
 
 **4. Your answer above doesn't tell the whole story since life expectancy varies by region. Make a summary that shows the min, mean, and max life expectancy by continent for all years represented in the data.**
 
@@ -337,13 +330,9 @@ gapminder_working%>%
 ```
 
 ```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
-```
 ## # A tibble: 5 x 4
 ##   continent min_exp max_exp avg_life
-##   <fct>       <dbl>   <dbl>    <dbl>
+## * <fct>       <dbl>   <dbl>    <dbl>
 ## 1 Africa       23.6    76.4     48.9
 ## 2 Americas     37.6    80.7     64.7
 ## 3 Asia         28.8    82.6     60.1
@@ -363,10 +352,6 @@ gapminder_working%>%
        y= "Max Life Expectancy")
 ```
 
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
 ![](lab11_hw_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
 
 
@@ -380,10 +365,6 @@ gapminder_working%>%
   labs(title = "Summary of life expectancy per continent",
        x = "Continent",
        y= "Average Life Expectancy")
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ![](lab11_hw_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
@@ -409,7 +390,7 @@ gapminder_working%>%
 ```
 
 ```
-## `summarise()` regrouping output by 'year', 'continent' (override with `.groups` argument)
+## `summarise()` has grouped output by 'year', 'continent'. You can override using the `.groups` argument.
 ```
 
 ![](lab11_hw_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
@@ -425,7 +406,7 @@ gapminder_working%>%
 ```
 
 ```
-## `summarise()` regrouping output by 'continent' (override with `.groups` argument)
+## `summarise()` has grouped output by 'continent'. You can override using the `.groups` argument.
 ```
 
 ![](lab11_hw_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
@@ -442,10 +423,6 @@ gapminder_working%>%
   filter(year==2007)%>%
   summarise(country,growth)%>%
   arrange(desc(growth))
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ```
@@ -476,10 +453,6 @@ gapminder_working%>%
   summarise(country,growth)%>%
   top_n(5)%>%
   arrange(desc(growth))
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ```
@@ -516,10 +489,6 @@ gapminder_working%>%
 ```
 
 ```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
-```
 ## Selecting by growth
 ```
 
@@ -539,14 +508,14 @@ gapminder_working%>%
 ```
 
 ```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
-```
 ## Selecting by growth
 ```
 
 ![](lab11_hw_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 **9. How does per-capita GDP growth compare between these same five countries?**
 
@@ -560,10 +529,6 @@ gapminder_working%>%
   summarise(country,growth_gdp)%>%
   top_n(5)%>%
   arrange(desc(growth_gdp))
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
 ```
 
 ```
@@ -592,7 +557,7 @@ gapminder_working%>%
 ```
 
 ```
-## `summarise()` regrouping output by 'country' (override with `.groups` argument)
+## `summarise()` has grouped output by 'country'. You can override using the `.groups` argument.
 ```
 
 ```
@@ -625,7 +590,7 @@ gapminder_working%>%
 ```
 
 ```
-## `summarise()` regrouping output by 'country' (override with `.groups` argument)
+## `summarise()` has grouped output by 'country'. You can override using the `.groups` argument.
 ```
 
 ```
@@ -649,6 +614,8 @@ gapminder_working%>%
 ## 10 Taiwan               27511.
 ## # ... with 274 more rows
 ```
+
+</div>
 
 
 **10. Make one plot of your choice that uses faceting!**
