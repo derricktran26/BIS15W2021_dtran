@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.travis\.yml$
+^README\.Rmd$
+^README\.*html$
+^NOTES\.*md$
+^NOTES\.*html$
+^README_files
+^CONDUCT\.md$
+^LICENSE\.md$

@@ -1,0 +1,29 @@
+Package: albersusa
+Type: Package
+Title: Tools, Shapefiles & Data to Work with an 'AlbersUSA' Composite Projection
+Version: 0.4.1
+Date: 2020-03-03
+Author: Bob Rudis (bob@rud.is)
+Maintainer: Bob Rudis <bob@rud.is>
+Description: Creating a composite projection for states and counties of the United States
+    that includes scaled and shifted polygons for Alaska and Hawaii is time consuming
+    and potentially error-prone. Functions and data sets are provided to make it easier to
+    produce maps with a composite projection. Furthermore, named projections for common
+    transormations are provided to further increase mapping productivity.
+URL: https://github.com/hrbrmstr/albersusa
+BugReports: https://github.com/hrbrmstr/albersusa/issues
+License: MIT + file LICENSE
+Suggests:
+    testthat,
+    ggalt,
+    tibble
+Depends:
+    R (>= 3.0.0)
+Imports:
+    sp,
+    sf,
+    rgeos,
+    rgdal,
+    maptools
+Encoding: UTF-8
+RoxygenNote: 7.0.2
