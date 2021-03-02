@@ -3,9 +3,9 @@ title: "Lab 12 Homework"
 author: "Derrick Tran"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  html_document: 
     theme: spacelab
-    toc: no
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -171,6 +171,10 @@ us_wolves_avg_pack<-us_wolves%>%
   summarise(avg_pack_size=mean(pack.size,na.rm=T))
 ```
 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 
 10. Make a new map that shows the distribution of wolves in the lower 48 US states but which has the size of location markers adjusted by pack size.
@@ -187,3 +191,6 @@ ggplot()+
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences. 
+
+# missing .md file.
+</div>
