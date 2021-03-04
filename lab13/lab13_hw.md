@@ -1,7 +1,7 @@
 ---
 title: "Lab 13 Homework"
 author: "Derrick Tran"
-date: "2021-03-02"
+date: "2021-03-03"
 output:
   html_document: 
     theme: spacelab
@@ -30,10 +30,10 @@ if (!require("tidyverse")) install.packages('tidyverse')
 ```
 
 ```
-## v ggplot2 3.3.3     v purrr   0.3.4
-## v tibble  3.0.6     v dplyr   1.0.4
-## v tidyr   1.1.2     v stringr 1.4.0
-## v readr   1.4.0     v forcats 0.5.1
+## √ ggplot2 3.3.3     √ purrr   0.3.4
+## √ tibble  3.1.0     √ dplyr   1.0.4
+## √ tidyr   1.1.3     √ stringr 1.4.0
+## √ readr   1.4.0     √ forcats 0.5.1
 ```
 
 ```
@@ -14807,6 +14807,11 @@ names(UC_admit_td)
 ## [4] "ethnicity"         "perc_fr"           "filtered_count_fr"
 ```
 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+# The original code put most variables in the y-axis, which doen't show the results what the question is asking. Please take a look at this fixed version.
 
 #this is the shell at the moment
 
@@ -14817,9 +14822,9 @@ ui_1 <- dashboardPage(
   dashboardHeader(title = "Tracking Ethnicity among UC Campus Admissions"),
   dashboardSidebar(),
   dashboardBody(
-    selectInput("x","Select X variable",choices = c("ethnicity"),
+    selectInput("x","Select X variable",choices = c("ethnicity","campus","academic_yr","category"),
               selected = "ethnicity"),
- selectInput("y","Select y variable",choices = c("campus","academic_yr","category","ethnicity","perc_fr","filtered_count_fr"),
+ selectInput("y","Select y variable",choices = c("filtered_count_fr"),
               selected = "filtered_count_fr"),
  box(title = "Tracking Ethnicity among UC Campus Admissions", width = 10,
   plotOutput("plot",width = "1000px",height = "900px")
@@ -14837,7 +14842,7 @@ server_1 <- function(input, output) {
 shinyApp(ui_1, server_1)
 ```
 
-
+</div>
 
 
 

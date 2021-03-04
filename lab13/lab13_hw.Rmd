@@ -109,6 +109,11 @@ UC_admit_td%>%
 names(UC_admit_td)
 ```
 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+# The original code put most variables in the y-axis, which doen't show the results what the question is asking. Please take a look at this fixed version.
 
 #this is the shell at the moment
 ```{r,eval=FALSE,echo=TRUE}
@@ -118,9 +123,9 @@ ui_1 <- dashboardPage(
   dashboardHeader(title = "Tracking Ethnicity among UC Campus Admissions"),
   dashboardSidebar(),
   dashboardBody(
-    selectInput("x","Select X variable",choices = c("ethnicity"),
+    selectInput("x","Select X variable",choices = c("ethnicity","campus","academic_yr","category"),
               selected = "ethnicity"),
- selectInput("y","Select y variable",choices = c("campus","academic_yr","category","ethnicity","perc_fr","filtered_count_fr"),
+ selectInput("y","Select y variable",choices = c("filtered_count_fr"),
               selected = "filtered_count_fr"),
  box(title = "Tracking Ethnicity among UC Campus Admissions", width = 10,
   plotOutput("plot",width = "1000px",height = "900px")
@@ -138,7 +143,7 @@ server_1 <- function(input, output) {
 shinyApp(ui_1, server_1)
 ```
 
-
+</div>
 
 
 

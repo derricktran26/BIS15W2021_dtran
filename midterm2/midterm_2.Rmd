@@ -120,6 +120,10 @@ life_expectancy%>%
   arrange(desc(n))
 ```
 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 ## Life Expectancy  
 
 3. (2 points) Let's limit the data to the past 100 years (1920-2020). For these years, which country has the highest life expectancy? How about the lowest life expectancy?  
@@ -141,6 +145,7 @@ life_expectancy_longer%>%
 
 #the highest is singapore and the lowest is Kazahkstan
 
+</div>
 
 4. (3 points) Although we can see which country has the highest life expectancy for the past 100 years, we don't know which countries have changed the most. What are the top 5 countries that have experienced the biggest improvement in life expectancy between 1920-2020?
 ```{r}
@@ -428,3 +433,5 @@ gapminder_join%>%
 plo_2+facet_grid(~country)
 ```
 #I could not get anything useful out of facets for this particular problem, I'm just including it for the sake of completeness
+
+## Nice work Derrick. I like that you tried lots of different approaches. I suppose if this were a report, then you would want to make things a bit more clear. Some of the tables could be better summarized and you would have to decide which type of graph you like best. Nicely done!
