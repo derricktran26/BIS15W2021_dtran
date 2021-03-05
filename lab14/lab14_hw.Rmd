@@ -24,6 +24,11 @@ library(tidyverse)
 library(ggmap)
 ```
 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
 **1. We have a satellite collars on a number of different individuals and want to be able to quickly look at all of their recent movements at once. Please load all the data files from `us_individual_collar_data` and use for loop to create plots for all different individuals of the path they move on longitude and latitude.**
 ```{r}
 us_individual_collar_data<-list.files("data/individual_collar_data",pattern= "collar-data-",full.names = TRUE)
@@ -133,6 +138,7 @@ for (i in 1:length(us_individual_collar_data)){
   )}
 ```
 
+</div>
 
 
 ## Load the Data
@@ -228,6 +234,10 @@ iplotScanone(out.em)
 ```{r}
 iplotScanone(out.em,chr=c(1,4))
 ```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 
 **9. Based on your genome scan results, create a table which only includes those chromosomes with LOD > 1. Creates an interactive chart with LOD curves linked to estimated QTL effects for only those chromosomes with LOD > 1. Find the gene maker with the highest LOD score and describe how does the genetype of this marker influence the individual's phenotype.**
 ```{r}
@@ -246,6 +256,7 @@ summary(out.em,threshold=1)
 ```{r}
 iplotScanone(out.em,hyper_no_null,chr=c(1,2,4,5,6,15))
 ```
+</div>
 
 **10. Please save your interactive chart from Q9 as a html file `hyper_iplotScanone.html` and make sure your upload it to your github repository with your lab14 homework as well.**
 ## Push your final code to GitHub!
